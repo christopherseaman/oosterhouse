@@ -14,6 +14,15 @@ A Key for how to interpret table is on the second sheet
 
 If you need any other clarification at all don't hesitate to let me know! Thank you so much for your help.
 
+Key:
+
+| For Yes/No questions: 1=yes and 2=no                              |
+| ----------------------------------------------------------------- |
+| For Yes/No questions: 1=yes and 2=no                              |
+| For gender: 1=male and 2=female                                   |
+| For school, 1=Cal, 2=AoA, 3=USF, 4=other                          |
+| Grayed out columns were for inclusion criteria and can be ignored |
+
 ----
 
 Quick notes from today:
