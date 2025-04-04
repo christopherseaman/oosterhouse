@@ -1,0 +1,119 @@
+{
+    "variables": {
+        "Are you age 18 or older?": {
+            "type": "inclusion",
+            "values": {
+                "1": "Yes"
+            }
+        },
+        "Are you a current NCAA athlete?": {
+            "type": "inclusion",
+            "values": {
+                "1": "Yes"
+            }
+        },
+        "Can you read and write in English?": {
+            "type": "inclusion",
+            "values": {
+                "1": "Yes"
+            }
+        },
+        "What is your gender? - Selected Choice": {
+            "type": "demographic",
+            "format": "categorical",
+            "values": {
+                "1": "Male",
+                "2": "Female"
+            }
+        },
+        "What school do you attend? - Selected Choice": {
+            "type": "demographic",
+            "format": "categorical",
+            "values": {
+                "1": "Cal",
+                "2": "AoA",
+                "3": "USF",
+                "4": "Other"
+            }
+        },
+        "What is your year in school? - Selected Choice": {
+            "type": "demographic",
+            "format": "categorical",
+            "values": {
+                "1": "1st Year",
+                "2": "2nd Year",
+                "3": "3rd Year",
+                "4": "4th Year",
+                "5": "5th Year",
+                "6": "6th Year"
+            }
+        },
+        "Have you ever been diagnosed with an eating disorder?": {
+            "type": "independent",
+            "format": "categorical",
+            "values": {
+                "1": "Yes",
+                "2": "No"
+            }
+        },
+        "Have you every been told you should change your weight?": {
+            "type": "independent",
+            "format": "categorical",
+            "values": {
+                "1": "Yes",
+                "2": "No"
+            }
+        },
+        "Weight-sensitive sport": {
+            "type": "independent",
+            "format": "categorical",
+            "values": {
+                "1": "Yes",
+                "2": "No"
+            }
+        },
+        "Endurance sport": {
+            "type": "independent",
+            "format": "categorical",
+            "values": {
+                "1": "Yes",
+                "2": "No"
+            }
+        },
+        "SS1 avg": {
+            "type": "outcome",
+            "format": "numeric",
+            "domain": 1,
+            "description": "Intuitive Eating"
+        },
+        "SS2 avg": {
+            "type": "outcome",
+            "format": "numeric",
+            "domain": 2,
+            "description": "Eating for Physical Rather Than Emotional Reasons"
+        },
+        "SS3 avg": {
+            "type": "outcome",
+            "format": "numeric",
+            "domain": 3,
+            "description": "Reliance on Hunger and Satiety Cues"
+        },
+        "SS4 avg": {
+            "type": "outcome",
+            "format": "numeric",
+            "domain": 4,
+            "description": "Body-Food Choice Congruence"
+        },
+        "Total Score Avg": {
+            "type": "outcome",
+            "format": "numeric",
+            "description": "Overall Intuitive Eating Score"
+        }
+    },
+    "question_groups": {
+        "SS1": ["Q1", "Q2", "Q3"],
+        "SS2": ["Q4", "Q5", "Q6"],
+        "SS3": ["Q7", "Q8", "Q9"],
+        "SS4": ["Q10", "Q11", "Q12"]
+    }
+} 
