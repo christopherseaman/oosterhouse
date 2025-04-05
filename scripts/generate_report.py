@@ -118,7 +118,12 @@ def write_eda(df, var_defs, charts):
 
 def write_analysis(df, var_defs, charts, t_test_results=None, anova_results=None):
     content = "# Statistical Analysis\n\n"
-
+    
+    # Add statistical significance summary
+    from scripts.generate_statsig_summary import generate_statsig_summary
+    summary = generate_statsig_summary(t_test_results, anova_results)
+    content += summary + "\n\n"
+    
     # T-tests
     content += "## t-tests\n\n"
     if t_test_results is not None and not t_test_results.empty:

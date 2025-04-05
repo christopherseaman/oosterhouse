@@ -14,6 +14,7 @@ from scripts.data_loader import load_data, generate_demographics_table
 from scripts.eda import perform_eda
 from scripts.statistical_analysis import perform_statistical_analysis
 from scripts.visualization import create_visualizations
+from scripts.generate_statsig_summary import generate_statsig_summary
 
 
 def main():
@@ -68,13 +69,17 @@ def main():
         # print("  Group Statistics:")
         # print(f"  Group Stats: {result['Group_Stats']}")
     
+    # Generate statistical significance summary
+    print("\nGenerating Statistical Significance Summary...")
+    summary = generate_statsig_summary(t_test_df, anova_results)
+    
     print("\nCreating visualizations...")
     from scripts.visualization import create_visualizations
     charts = create_visualizations(df, var_defs)
 
     # Pass freshly computed stats to report generator
 
-    from generate_report import generate_docs
+    from scripts.generate_report import generate_docs
     generate_docs(df, var_defs, charts, t_test_results=t_test_df, anova_results=anova_results)
     
     print("\nAnalysis complete! Results saved to CSV files in the results directory.")
