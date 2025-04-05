@@ -18,25 +18,25 @@
                 "1": "Yes"
             }
         },
-        "What is your gender? - Selected Choice": {
+        "What is your gender?": {
             "type": "demographic",
             "format": "categorical",
             "values": {
-                "1": "Male",
-                "2": "Female"
+                "1": "Female",
+                "2": "Male"
             }
         },
-        "What school do you attend? - Selected Choice": {
+        "What school do you attend?": {
             "type": "demographic",
             "format": "categorical",
             "values": {
                 "1": "Cal",
-                "2": "AoA",
-                "3": "USF",
+                "2": "USF",
+                "3": "AoA",
                 "4": "Other"
             }
         },
-        "What is your year in school? - Selected Choice": {
+        "What is your year in school?": {
             "type": "demographic",
             "format": "categorical",
             "values": {

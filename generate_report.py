@@ -36,89 +36,57 @@ def write_index():
 def write_data_summary(df, var_defs, charts):
     content = "# Variable Summary\n\n"
 
-    # Demographics and Independents
-    sections = {
-        "Demographics": [
-            "What is your gender? - Selected Choice",
-            "What school do you attend? - Selected Choice",
-            "What is your year in school? - Selected Choice"
-        ],
-        "Independent Variables": [
-            "Have you ever been diagnosed with an eating disorder?",
-            "Have you every been told you should change your weight?",
-            "Weight-sensitive sport",
-            "Endurance sport"
-        ]
-    }
+    # Get variables by type from metadata
+    demographic_cols = [col for col, info in var_defs['variables'].items() if info['type'] == 'demographic']
+    independent_cols = [col for col, info in var_defs['variables'].items() if info['type'] == 'independent']
+    outcome_cols = [col for col, info in var_defs['variables'].items() if info['type'] == 'outcome']
 
-    for section, vars_list in sections.items():
-        content += f"## {section}\n\n"
-        for var in vars_list:
-            # Add variable heading first
-            content += f"### {var}\n\n"
+    # Demographics section
+    content += "## Demographics\n\n"
+    for var in demographic_cols:
+        content += f"### {var}\n\n"
+        chart = charts.get('distributions', {}).get(var)
+        if chart:
+            content += f"```vegalite\n{chart.to_json()}\n```\n\n"
+        if var in df.columns:
+            freq = df[var].value_counts(dropna=False).reset_index()
+            freq.columns = [var, 'Count']
+            content += freq.to_markdown(index=False) + "\n\n"
+        else:
+            content += "_No data available._\n\n"
 
-            # Prepare univariate plot markdown to embed after table
-            safe_var = var.replace("?", "").replace("-", "").replace(" ", "_").replace("/", "_").replace("\\", "_")
-            chart = charts.get('distributions', {}).get(var) or charts.get('distributions', {}).get(safe_var)
-            plot_md = ""
-            if chart:
-                spec = chart.to_json()
-                plot_md = f"```vegalite\n{spec}\n```\n\n"
-
-            # Add frequency table for this variable (no extra header)
-            # Remove first frequency table block entirely
-
-            # Embed univariate plot above table
-            content += plot_md
-
-            # Add frequency table (always)
-            if var in df.columns:
-                freq = df[var].value_counts(dropna=False).reset_index()
-                freq.columns = [var, 'Count']
-                content += freq.to_markdown(index=False) + "\n\n"
-            else:
-                content += "_No data available._\n\n"
+    # Independent Variables section
+    content += "## Independent Variables\n\n"
+    for var in independent_cols:
+        content += f"### {var}\n\n"
+        chart = charts.get('distributions', {}).get(var)
+        if chart:
+            content += f"```vegalite\n{chart.to_json()}\n```\n\n"
+        if var in df.columns:
+            freq = df[var].value_counts(dropna=False).reset_index()
+            freq.columns = [var, 'Count']
+            content += freq.to_markdown(index=False) + "\n\n"
+        else:
+            content += "_No data available._\n\n"
 
     # Score distributions
-    score_cols = ["Total Score Avg", "SS1 avg", "SS2 avg", "SS3 avg", "SS4 avg"]
-    df_scores = df[score_cols] if all(c in df.columns for c in score_cols) else pd.DataFrame()
+    df_scores = df[outcome_cols] if all(c in df.columns for c in outcome_cols) else pd.DataFrame()
 
     if not df_scores.empty:
-        # Prepare boxplot to embed later
-        boxplot = charts.get('score_boxplot')
-        boxplot_md = ""
-        if boxplot:
-            spec = boxplot.to_json()
-            boxplot_md = f"```vegalite\n{spec}\n```\n\n"
-
-        # Layered histogram
-        layered_hist = charts.get('score_layered_hist')
-        if layered_hist:
-            spec = layered_hist.to_json()
-            content += "### Layered Histograms of Scores\n\n"
-            content += f"```vegalite\n{spec}\n```\n\n"
-
-        # Embed plots first
         content += "## Score Summaries\n\n"
-        if boxplot_md:
-            content += boxplot_md + "\n"
+        
+        # Add boxplot
+        boxplot = charts.get('score_boxplot')
+        if boxplot:
+            content += f"```vegalite\n{boxplot.to_json()}\n```\n\n"
+
+        # Add layered histogram if available
         layered_hist = charts.get('score_layered_hist')
         if layered_hist:
-            spec = layered_hist.to_json()
-            content += f"```vegalite\n{spec}\n```\n\n"
+            content += f"```vegalite\n{layered_hist.to_json()}\n```\n\n"
 
-        # Then add score summary table
+        # Add score summary table
         content += df_scores.describe().transpose().to_markdown() + "\n\n"
-
-        # Embed boxplot after Score Summaries header and table
-        # Embed plots immediately after Score Summaries header
-        if boxplot_md:
-            content += boxplot_md + "\n"
-
-        layered_hist = charts.get('score_layered_hist')
-        if layered_hist:
-            spec = layered_hist.to_json()
-            content += f"```vegalite\n{spec}\n```\n\n"
 
     (DOCS_DIR / "data_summary.md").write_text(content)
 
@@ -145,8 +113,6 @@ def write_eda(df, var_defs, charts):
         spec = cat_assoc.to_json()
         content += "## Categorical Associations\n\n"
         content += f"```vegalite\n{spec}\n```\n\n"
-
-    # REMOVE Scores by categories (boxplots) from EDA
 
     (DOCS_DIR / "eda.md").write_text(content)
 
@@ -183,14 +149,12 @@ def write_analysis(df, var_defs, charts, t_test_results=None, anova_results=None
             grouped.setdefault(group, []).append(row)
 
         for indep_var, rows in grouped.items():
-            indep_name = indep_var.replace(' - Selected Choice', '')
-            content += f"### {indep_name}\n\n"
+            content += f"### {indep_var}\n\n"
             for row in rows:
                 effect_size_name = 'partial_eta_squared'
                 effect_size_value = row.get(effect_size_name, 0)
                 
-                outcome_name = row['Outcome'].replace(' - Selected Choice', '')
-                content += f"#### {outcome_name}\n\n"
+                content += f"#### {row['Outcome']}\n\n"
                 
                 # Embed ANCOVA plot (boxplot) for this variable immediately after heading
                 boxplots = charts.get('boxplots', {})
@@ -210,8 +174,7 @@ def write_analysis(df, var_defs, charts, t_test_results=None, anova_results=None
                     content += "| Covariate | F | p-value (FDR-adjusted) | Partial η² |\n"
                     content += "|-----------|---|------------------------|------------|\n"
                     for cov, effect in covariate_effects.items():
-                        cov_name = cov.replace(' - Selected Choice', '')
-                        content += f"| {cov_name} | {effect['F']:.3f} | {effect['p_value']:.3f} | {effect['partial_eta_sq']:.3f} |\n"
+                        content += f"| {cov} | {effect['F']:.3f} | {effect['p_value']:.3f} | {effect['partial_eta_sq']:.3f} |\n"
                     content += "\n"
     else:
         content += "_No ANCOVA results available._\n\n"

@@ -26,6 +26,14 @@ def load_data():
     # Load the data
     df = pd.read_csv(data_path, sep='\t')
     
+    # Rename columns to match variable definitions (remove " - Selected Choice")
+    column_mapping = {
+        "What is your gender? - Selected Choice": "What is your gender?",
+        "What school do you attend? - Selected Choice": "What school do you attend?",
+        "What is your year in school? - Selected Choice": "What is your year in school?"
+    }
+    df = df.rename(columns=column_mapping)
+    
     # Process variables according to their type
     for col, info in var_defs['variables'].items():
         if col not in df.columns:
