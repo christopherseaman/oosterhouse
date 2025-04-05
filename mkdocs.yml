@@ -1,5 +1,5 @@
 site_name: IES-3 Data Analysis Report
-site_url: https://your-site-url
+site_url: https://christopherseaman.github.io/oosterhouse
 theme:
   name: material
   features:
@@ -34,5 +34,8 @@ markdown_extensions:
         - name: vegalite
           class: vegalite
           format: !!python/name:mkdocs_charts_plugin.fences.fence_vegalite
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
 docs_dir: docs
 site_dir: site
