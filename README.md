@@ -2,17 +2,11 @@
 
 This project performs automated analysis and visualization of IES-3 survey data, generating a fully automated, version-controlled documentation website. The entire process — from data processing to publishing — is orchestrated via scripts and continuous deployment.
 
----
+## Output
 
-## Key Features
-
-- **Automated Data Analysis:** Cleans, analyzes, and visualizes survey data with minimal manual intervention.
-- **Metadata-Driven:** Uses metadata to guide variable processing and statistical tests.
-- **Reproducible Reports:** Generates figures, tables, and summaries saved to versioned outputs.
-- **Automated Documentation:** Builds a static website with [MkDocs](https://www.mkdocs.org/) and [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/).
-- **Continuous Deployment:** Publishes the latest documentation to GitHub Pages and Cloudflare Pages on every push.
-
----
+1. **Variable Summary:** Descriptions of each variable individually
+2. **Bivariate Relationships:** Correlations and relationships between pairs of variables
+3. **Statistical Analysis:** t-tests and ANCOVAs of scores and subscores
 
 ## Automated Workflow Overview
 
@@ -31,29 +25,31 @@ flowchart TD
     I --> J[Deploy to GitHub & Cloudflare Pages]
 ```
 
----
-
 ## Analysis Plan
 
 ### 1. Data Loading & Validation
+
 - Load raw survey data (TSV) and metadata (JSON).
 - Convert categorical variables using metadata mappings.
 - Convert outcome variables to numeric.
 - Handle missing values and perform validation checks.
 
 ### 2. Automated EDA & Summaries
+
 - Summarize dataset shape, columns, data types.
 - Count missing values and unique values.
 - Generate descriptive statistics.
 - Save EDA summaries.
 
 ### 3. Demographics & Score Summaries
+
 - Use metadata to identify demographic variables.
 - Generate counts and percentages for categories.
 - Summarize IES-3 total and subscale scores.
 - Save tables to CSV.
 
 ### 4. Metadata-Driven Statistical Testing
+
 - Automatically select variables for:
   - T-tests (binary groups)
   - ANOVA (multi-category groups)
@@ -62,20 +58,24 @@ flowchart TD
 - Save all results to CSV.
 
 ### 5. Multiple Comparisons Correction
+
 - Apply False Discovery Rate (FDR) correction across all p-values.
 - Save corrected results.
 
 ### 6. Correlation Analyses
+
 - Pearson and Spearman correlations for numeric variables.
 - Cramér’s V for categorical associations.
 - Save correlation matrices.
 
 ### 7. Visualization
+
 - Distribution plots, boxplots, heatmaps, pair plots.
 - Highlight significant results.
 - Save all plots as PNG files.
 
 ### 8. Automated Documentation
+
 - Generate Markdown files summarizing:
   - Data and metadata
   - Statistical results
@@ -83,32 +83,35 @@ flowchart TD
 - Organize content for MkDocs.
 
 ### 9. Static Site Build & Deployment
+
 - Build the MkDocs static site.
 - Deploy to GitHub Pages (`gh-pages` branch).
 - Cloudflare Pages follows the same branch for hosting.
 
----
-
 ## Script Documentation
 
 ### `scripts/orchestrator.py`
+
 - **Main entry point** for the entire pipeline.
 - Calls all other modules in sequence.
 - Generates Markdown documentation content.
 - Handles file outputs.
 
 ### `scripts/data_loader.py`
+
 - Loads raw data and metadata.
 - Converts variables based on metadata.
 - Provides helper functions for variable selection and transformation.
 
 ### `scripts/statistical_analysis.py`
+
 - Performs t-tests, ANOVA, correlations.
 - Calculates effect sizes.
 - Applies FDR correction.
 - Outputs results as CSV.
 
 ### `scripts/visualization.py`
+
 - Generates all plots:
   - Distributions
   - Boxplots
@@ -118,49 +121,30 @@ flowchart TD
 - Saves plots as PNG files.
 
 ### `scripts/eda.py`
+
 - Performs exploratory data analysis.
 - Summarizes missing data, unique values, and descriptive stats.
 - Outputs EDA summaries.
 
 ### `generate_report.py`
-- (Optional) Additional report generation or orchestration.
 
----
+- (Optional) Additional report generation or orchestration.
 
 On every push to `main` or `master`:
 
 1. **Checkout code and data**
 2. **Install dependencies**
 3. **Run the orchestrator script** to:
-   - Load data and metadata
-   - Perform exploratory data analysis (EDA)
-   - Generate demographics and summary statistics
-   - Run metadata-driven statistical tests
-   - Create visualizations
-   - Save all outputs to the `results/` directory
-   - Generate Markdown documentation content
+    - Load data and metadata
+    - Perform exploratory data analysis (EDA)
+    - Generate demographics and summary statistics
+    - Run metadata-driven statistical tests
+    - Create visualizations
+    - Save all outputs to the `results/` directory
+    - Generate Markdown documentation content
 4. **Build the MkDocs static site**
 5. **Deploy the site** to the `gh-pages` branch
 6. **GitHub Pages and Cloudflare Pages** serve the latest documentation
-
----
-
-## Documentation Site
-
-Access the latest project documentation here:
-
-- **GitHub Pages:** [https://christopherseaman.github.io/oosterhouse/](https://christopherseaman.github.io/oosterhouse/)
-- **Cloudflare Pages:** (if configured, follows the `gh-pages` branch)
-
-The site includes:
-
-- Pipeline overview
-- Data summaries
-- Statistical results
-- Visualizations
-- Download links for data and outputs
-
----
 
 ## Usage
 
@@ -188,8 +172,6 @@ mkdocs serve
 
 Then open [http://127.0.0.1:8000](http://127.0.0.1:8000) in your browser.
 
----
-
 ## Repository Structure
 
 ```
@@ -205,8 +187,6 @@ Then open [http://127.0.0.1:8000](http://127.0.0.1:8000) in your browser.
 ├── requirements.txt        # Python dependencies
 └── .github/workflows/      # GitHub Actions CI/CD workflows
 ```
-
----
 
 ## Dependencies
 
@@ -227,9 +207,3 @@ Install all with:
 ```bash
 pip install -r requirements.txt
 ```
-
----
-
-## License
-
-[MIT](LICENSE)
