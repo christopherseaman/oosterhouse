@@ -48,7 +48,7 @@ def main():
     print("\nPerforming Statistical Analysis...")
     
     # Perform statistical analysis
-    t_test_df, anova_df = perform_statistical_analysis(df, var_defs)
+    t_test_df, anova_results = perform_statistical_analysis(df, var_defs)
     
     # Print t-test results
     print("\nT-Test Results:")
@@ -61,12 +61,12 @@ def main():
     
     # Print ANOVA results
     print("\nANOVA Results:")
-    for result in anova_df.to_dict('records'):
+    for result in anova_results.to_dict('records'):
         print(f"\nResults for {result['Variable']} on {result['Outcome']}:")
         print(f"  F = {result['F_statistic']:.3f}, p = {result['p_value']:.3f}")
-        print(f"  Eta-squared = {result['eta_squared']:.3f}")
-        print("  Group Statistics:")
-        print(f"  Group Stats: {result['Group_Stats']}")
+        print(f"  Partial Eta-squared = {result['partial_eta_squared']:.3f}")
+        # print("  Group Statistics:")
+        # print(f"  Group Stats: {result['Group_Stats']}")
     
     print("\nCreating visualizations...")
     from scripts.visualization import create_visualizations
@@ -75,7 +75,7 @@ def main():
     # Pass freshly computed stats to report generator
 
     from generate_report import generate_docs
-    generate_docs(df, var_defs, charts, t_test_results=t_test_df, anova_results=anova_df)
+    generate_docs(df, var_defs, charts, t_test_results=t_test_df, anova_results=anova_results)
     
     print("\nAnalysis complete! Results saved to CSV files in the results directory.")
 

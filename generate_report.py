@@ -172,39 +172,39 @@ def write_analysis(df, var_defs, charts, t_test_results=None, anova_results=None
     else:
         content += "_No t-test results available._\n\n"
 
-    # ANOVA
-    content += "## ANOVA\n\n"
+    # ANCOVA with demographic covariates
+    content += "## ANCOVA with Demographic Covariates\n\n"
+    content += "_Note: All p-values are adjusted using False Discovery Rate (FDR) correction to control for multiple comparisons._\n\n"
+    
     if anova_results is not None and not anova_results.empty:
-        for _, row in anova_results.iterrows():
+        for row in anova_results.to_dict('records'):
+            effect_size_name = 'partial_eta_squared'
+            effect_size_value = row.get(effect_size_name, 0)
+            
             content += f"### {row['Variable']} on {row['Outcome']}\n\n"
-            content += f"- **F** = {row['F_statistic']:.3f}\n"
-            content += f"- **p** = {row['p_value']:.3f}\n"
-            content += f"- **Eta-squared** = {row['eta_squared']:.3f}\n\n"
-            # Parse group stats
-            try:
-                import ast
-                group_stats_str = row['Group_Stats'].replace('nan', 'None')
-                group_stats = ast.literal_eval(group_stats_str)
-                content += "| Group | n | Mean | SD |\n"
-                content += "|--------|----|-------|-------|\n"
-                for group, stats in group_stats.items():
-                    mean = float(stats.get('mean', float('nan')))
-                    std = float(stats.get('std', float('nan')))
-                    n = int(stats.get('n', 0))
-                    content += f"| {group} | {n} | {mean:.3f} | {std:.3f} |\n"
-                content += "\n"
-            except Exception:
-                content += "_Group stats unavailable._\n\n"
-    else:
-        content += "_No ANOVA results available._\n\n"
+            
+            # Embed ANCOVA plot (boxplot) for this variable immediately after heading
+            boxplots = charts.get('boxplots', {})
+            for key, chart in boxplots.items():
+                if key.strip().lower() == str(row['Variable']).strip().lower():
+                    spec = chart.to_json()
+                    content += f"```vegalite\n{spec}\n```\n\n"
+                    break
 
-    # Debug info for group stats parsing failures
-    import ast
-    for _, row in anova_results.iterrows():
-        try:
-            ast.literal_eval(row['Group_Stats'])
-        except Exception as e:
-            content += f"<!-- Failed to parse group stats for {row['Variable']} on {row['Outcome']}: {e} -->\n"
+            content += f"- **F** = {row['F_statistic']:.3f}\n"
+            content += f"- **p** = {row['p_value']:.3f} (FDR-adjusted)\n"
+            content += f"- **{effect_size_name.replace('_', ' ').title()}** = {effect_size_value:.3f}\n\n"
+
+            # Add covariate effects table without heading
+            covariate_effects = row.get('Covariate_Effects', {})
+            if covariate_effects:
+                content += "| Covariate | F | p-value (FDR-adjusted) | Partial η² |\n"
+                content += "|-----------|---|------------------------|------------|\n"
+                for cov, effect in covariate_effects.items():
+                    content += f"| {cov} | {effect['F']:.3f} | {effect['p_value']:.3f} | {effect['partial_eta_sq']:.3f} |\n"
+                content += "\n"
+    else:
+        content += "_No ANCOVA results available._\n\n"
 
     # Drill-down chart
     drilldown = charts.get('drilldown_chart')

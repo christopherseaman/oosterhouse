@@ -8,3 +8,4 @@ mkdocs-material
 mkdocs-charts-plugin
 jinja2
 pyyaml
+pingouin
