@@ -1,4 +1,8 @@
-# Suggestions for Improving the Data Analysis Pipeline
+# Suggestions and Finalized Implementation Plan
+
+This file contains both the **status of suggestions** and the **detailed, finalized plan** for the data analysis pipeline, reporting, and deployment. It should be referenced throughout development and build processes.
+
+---
 
 ## Status Legend
 - [x] **Completed**
@@ -9,136 +13,136 @@
 
 ## Suggestions with Status
 
-- [x] **Integrate correlation analysis**  
-  Incorporated into the unified metadata-driven statistical analysis.
-
-- [x] **Unify statistical analysis functions using metadata**  
-  Fully implemented with FDR correction and saved outputs.
-
-- [x] **Modularize demographics generation**  
-  Now a reusable function in `data_loader.py`.
-
-- [x] **Enhance documentation**  
-  Added summary diagram and improved comments.
-
-- * **Improve error handling**  
-  Deferred for now.
-
-- [ ] **Automate report generation as a website**  
-  Planned: MkDocs static site with GitHub Actions, structured pages, and dynamic highlights.
-
-- * **Use logging instead of print statements**  
-  Deferred for now.
-
-- [ ] **Simplify and optimize code further**  
-  Planned: Avoid any remaining manual calculations, use library functions.
-
-- [ ] **Additional visualizations**  
-  Planned: Violin plots, swarm plots, effect size visualizations.
+- [x] Integrate correlation analysis
+- [x] Unify statistical analysis functions using metadata
+- [x] Modularize demographics generation
+- [x] Enhance documentation
+- * Improve error handling
+- [ ] Automate report generation as a website
+- * Use logging instead of print statements
+- [ ] Simplify and optimize code further
+- [ ] Additional visualizations
 
 ---
 
-## Detailed Reporting Requirements
+## Success Criteria for Remaining Steps
 
-### Overview
+### Automate report generation as a website
 
-- **Static website** generated with MkDocs (or similar).
-- **Automated build** via GitHub Actions on data/code changes.
-- **Modular content**: separate pages for overview, EDA, statistics, correlations, visualizations.
-- **Consistent styling** using mkdocs-material theme.
-- **Interactive elements** where feasible (e.g., collapsible sections, sortable tables).
+- Markdown files are generated for all report pages (`index.md`, `data_summary.md`, `eda.md`, `analysis.md`, `explore.md`, `visualizations.md`).
+- Each page **embeds Vega-Lite JSON specs** inside ```vegalite code blocks.
+- All charts render interactively in MkDocs with `mkdocs-charts-plugin`.
+- All relevant tables (demographics, scores, stats) are embedded as markdown tables.
+- The report can be **rebuilt automatically** after analysis updates.
+- The report is **clear, navigable, and matches the planned content**.
 
-### Site Structure
+### MkDocs local testing
 
-- **Home Page (`index.md`)**
-  - Project overview and goals, e.g., 
-  - Navigation menu.
-  - Summary of key significant findings with links to details.
-  - Date/time of last update.
+- `mkdocs serve` runs without errors.
+- All pages load correctly in the browser.
+- Embedded Vega-Lite charts render interactively.
+- Navigation and styling are correct with mkdocs-material theme.
+- **Force refresh (Ctrl+Shift+R) shows latest content after rebuild.**
 
-- **Data Summary Page (`data_summary.md`)**
-  - Dataset description (rows, columns, missing data).
-  - Demographics table (embedded CSV or markdown table).
-  - Score summaries (means, SDs).
-  - Download links for raw data and processed CSVs.
+### Deployment (GitHub Pages and Cloudflare Pages)
 
-- **EDA Page (`eda.md`)**
-  - Distribution plots (histograms, boxplots).
-  - Missing data heatmaps or summaries.
-  - Categorical variable breakdowns.
-  - Key insights or anomalies.
+- `mkdocs build` completes without errors.
+- Site deploys successfully to both platforms.
+- Live site matches local preview.
+- Interactive charts work on deployed site.
+- Navigation and styling are preserved.
+- **GitHub Actions workflow supports force deploy:**
+  - Can be triggered manually or on push.
+  - **Overrides existing site content** to ensure latest version is live.
+  - Uses `--force` or equivalent to push changes even if no diff detected.
+  - Provides clear logs of deployment status.
 
-- **Statistical Analysis Page (`analysis.md`)**
-  - T-test results table with effect sizes.
-  - ANOVA results with group stats.
-  - Point-biserial correlations.
-  - Eta squared results.
-  - Highlight statistically significant results (e.g., bold, color, or icons).
-  - Download links for CSVs.
+### Simplify and optimize code further
 
-- **Correlations Page (`correlations.md`)**
-  - Pearson and Spearman correlation matrices (heatmaps and CSVs).
-  - Cramér's V heatmaps for categorical associations.
-  - Interpretation notes.
+- Visualization and report generation code is **modular, readable, and minimal**.
+- Avoid redundant calculations or file exports.
+- Use **Altair's declarative API** for all charts.
+- Use **pandas** for all table generation.
+- No unnecessary dependencies or complex logic.
 
-- **Visualizations Page (`visualizations.md`)**
-  - All generated plots (saved as PNGs).
-  - Captions explaining each plot.
-  - Optionally, interactive plots (Plotly, Altair).
+### Additional visualizations
 
-### File Organization
+- Violin plots, swarm plots, effect size plots are **implemented as Altair charts**.
+- Embedded in the appropriate markdown pages.
+- Interactive features (filtering, tooltips) are enabled.
+- Visualizations are **clear, informative, and consistent**.
 
-- `docs/`
-  - `index.md`, `data_summary.md`, `eda.md`, `analysis.md`, `correlations.md`, `visualizations.md`
-  - `assets/`
-    - `images/` (all PNGs)
-    - `tables/` (all CSVs)
-- `mkdocs.yml` configuration file with navigation and theme settings.
+### Improve error handling (deferred)
 
-### Automation Details
-
-- **Script or Makefile** to:
-  - Run the full analysis pipeline.
-  - Export markdown files with embedded results.
-  - Copy images and CSVs into `docs/assets/`.
-- **GitHub Actions workflow** to:
-  - Set up environment.
-  - Run the above script.
-  - Build and deploy the MkDocs site to GitHub Pages.
-
-### Styling and Interactivity
-
-- Use **mkdocs-material** theme for clean navigation.
-- Highlight significant results (e.g., p < 0.05) with:
-  - Bold text.
-  - Color coding (green/red).
-  - Icons or badges.
-- Use collapsible sections for detailed tables.
-- Optionally, add interactive tables (DataTables.js) or plots (Plotly).
-
-### Integration with Analysis Pipeline
-
-- Modify analysis scripts to:
-  - Save outputs in `results/` with consistent naming.
-  - Generate markdown snippets or full pages programmatically.
-  - Link CSVs and images in markdown.
-- Ensure all outputs are reproducible and update automatically.
+- The pipeline **skips missing or empty data gracefully**.
+- Clear warnings are printed if expected outputs are missing.
+- The report still builds even if some parts fail.
 
 ---
 
-## Summary Diagram
+## Finalized Implementation Plan (Updated)
+
+### Visualization Strategy
+
+- Use **Altair** for nearly all plots: histograms, bar charts, boxplots, violin plots, scatter plots, heatmaps, pair plots.
+- Enable interactive filtering, tooltips, drill-downs.
+- **Instead of exporting PNGs or HTML, save Altair charts as Vega-Lite JSON specs.**
+- **Embed these JSON specs directly in markdown** inside fenced code blocks with language `vegalite`.
+- MkDocs with `mkdocs-charts-plugin` will render these as interactive charts.
+- Use markdown or DataTables.js for tabular data.
+
+### Per-Page Content
+
+- **Home:** Overview, goals, key significant findings (links), update timestamp.
+- **Data Summary:** Dataset info, variable definitions, demographics, score summaries, downloads.
+- **EDA:** Distributions, missing data, unique counts, insights, **embedded Vega-Lite charts**.
+- **Statistical Analysis:** T-tests, ANOVA, correlations, effect sizes, violin/boxplots, highlights, downloads, **embedded Vega-Lite charts**.
+- **Explore:** Interactive pair plots, correlation heatmaps, categorical associations, client-side filtering, **embedded Vega-Lite charts**.
+- **Visualizations:** All charts embedded as Vega-Lite JSON specs with captions.
+
+### Variable Mapping
+
+- **Demographics:** Gender, School, Year in school
+- **Independents:** Eating disorder history, Told to change weight, Weight-sensitive sport, Endurance sport
+- **Outcomes:** SS1-4 avg, Total Score Avg
+- **Ignored:** Inclusion criteria, free text, raw question scores
+
+### Deployment
+
+- **Build once** with GitHub Actions:
+  - Run analysis, generate markdown, export Altair JSON specs.
+  - Build MkDocs site.
+- **Deploy to both:**
+  - GitHub Pages (push to `gh-pages`)
+  - Cloudflare Pages (via repo integration or API)
+- **Single workflow** handles both deployments.
+- **Supports force deploy** to override existing site content and ensure latest version is live.
+
+### Tech Stack Choices
+
+| Component | Preferred | Alternatives | Rationale |
+|-----------|-----------|--------------|-----------|
+| Static site | MkDocs + mkdocs-material | Sphinx, Hugo | Simplicity, Python-native |
+| Hosting | GitHub Pages, Cloudflare Pages | Netlify, Vercel | Free, easy |
+| Interactive viz | Altair/Vega-Lite embedded as JSON | Plotly, Observable | Declarative, lightweight, markdown-embeddable |
+| Tables | Markdown, DataTables.js | ag-Grid, Tabulator | Simplicity |
+| Automation | GitHub Actions | Makefile, manual | Easy CI/CD |
+
+### Summary Diagram
 
 ```mermaid
 flowchart TD
-    A[Load Data] --> B[Perform EDA]
+    A[Load Data & Metadata] --> B[Perform EDA]
     B --> C[Generate Demographics]
-    C --> D[Run Statistical Tests]
+    C --> D[Run Metadata-Driven Statistical Tests]
     D --> E[Apply Multiple Comparisons Correction]
     E --> F[Perform Correlation Analysis]
     F --> G[Create Visualizations]
-    G --> H[Generate Website Report]
+    G --> H[Generate Interactive Website Report]
 ```
 
 ---
 
-This expanded specification provides a clear blueprint for building a comprehensive, automated, and user-friendly reporting website.
+## Reference
+
+This plan supersedes previous drafts. Use it as the **source of truth** during implementation, automation, and reporting.

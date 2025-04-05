@@ -1,29 +1,14 @@
-#!/usr/bin/env python3
-
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-from pathlib import Path
-import os
+import altair as alt
 from scipy.stats import contingency
 
 def create_visualizations(df, var_defs=None):
     """
-    Create various visualizations of the data
-    Args:
-        df: pandas DataFrame containing the data
-        var_defs: optional dictionary containing variable definitions and mappings
+    Create Altair-based visualizations of the data.
+    Returns a dictionary of Altair chart objects.
     """
-    results_dir = Path(__file__).parent.parent / "results"
-    
-    # Set style
-    plt.style.use('seaborn-v0_8')
-    
-    # Create results directory if it doesn't exist
-    os.makedirs(results_dir, exist_ok=True)
-    
-    # Define key variable groups
+
     outcome_cols = ['Total Score Avg', 'SS1 avg', 'SS2 avg', 'SS3 avg', 'SS4 avg']
     demographic_cols = [
         'What is your gender? - Selected Choice',
@@ -36,135 +21,100 @@ def create_visualizations(df, var_defs=None):
         'Weight-sensitive sport',
         'Endurance sport'
     ]
-    
-    # All key variables for analysis
-    analysis_cols = demographic_cols + independent_cols + outcome_cols
-    
-    # Columns to exclude
-    exclude_cols = [
-        # Inclusion criteria
-        'Are you age 18 or older?',
-        'Are you a current NCAA athlete?',
-        'Can you read and write in English?',
-        # Text columns
-        'What is your gender? - Other - Text',
-        'What school do you attend? - Other - Text',
-        'What is your year in school? - Other - Text',
-        'What sport do you participate in?',
-        # Individual questions and raw subscales
-        'Q1', 'Q2', 'Q3', 'SS1',
-        'Q4', 'Q5', 'Q6', 'SS2',
-        'Q7', 'Q8', 'Q9', 'SS3',
-        'Q10', 'Q11', 'Q12', 'SS4',
-        'Total Score'  # Using Total Score Avg instead
-    ]
-    
-    # 1. Distribution of Total Score
-    plt.figure(figsize=(10, 6))
-    sns.histplot(data=df, x='Total Score Avg', bins=20)
-    plt.title('Distribution of Total IES-3 Score')
-    plt.xlabel('Total Score Average')
-    plt.ylabel('Count')
-    plt.savefig(results_dir / 'total_score_distribution.png')
-    plt.close()
-    
-    # 2. Box plots for all categorical variables vs outcomes
-    n_cats = len(demographic_cols + independent_cols)
-    n_outcomes = len(outcome_cols)
-    fig, axes = plt.subplots(n_cats, 1, figsize=(15, 5*n_cats))
-    fig.suptitle('Score Distributions by Categorical Variables', y=1.02, fontsize=16)
-    
-    # Create melted dataframe for box plots
+
+    charts = {}
+
+    # Distribution plots for outcomes
+    charts['distributions'] = {
+        col: alt.Chart(df).mark_bar().encode(
+            alt.X(col, bin=alt.Bin(maxbins=20), title=col),
+            y='count()',
+            tooltip=[col, 'count()']
+        ).properties(title=f'Distribution of {col}', width=300, height=200).interactive()
+        for col in outcome_cols
+    }
+
+    # Add bar plots for categorical demographic and independent variables
+    categorical_vars = []
+    if var_defs:
+        for col, info in var_defs.get('variables', {}).items():
+            if info.get('type') in ['demographic', 'independent'] and info.get('format') == 'categorical':
+                categorical_vars.append(col)
+
+    for col in categorical_vars:
+        try:
+            chart = alt.Chart(df).mark_bar().encode(
+                x=alt.X(f"{col}:N", title=col),
+                y='count()',
+                tooltip=[col, 'count()']
+            ).properties(title=f'Distribution of {col}', width=300, height=200).interactive()
+            charts['distributions'][col] = chart
+        except Exception:
+            continue
+
+    # Boxplots
     df_melted = df.melt(
         id_vars=demographic_cols + independent_cols,
         value_vars=outcome_cols,
         var_name='Score Type',
         value_name='Score'
     )
-    
-    for idx, var in enumerate(demographic_cols + independent_cols):
-        sns.boxplot(data=df_melted, x='Score Type', y='Score', 
-                    hue=var, ax=axes[idx])
-        axes[idx].set_title(f'Scores by {var}')
-        axes[idx].tick_params(axis='x', rotation=45)
-    
-    plt.tight_layout()
-    plt.savefig(results_dir / 'all_scores_by_categories.png', bbox_inches='tight', dpi=300)
-    plt.close()
-    
-    # 3. Correlation heatmap for outcome variables only
-    plt.figure(figsize=(10, 8))
-    sns.heatmap(df[outcome_cols].corr(method='pearson'), annot=True, cmap='coolwarm', center=0,
-                xticklabels=True, yticklabels=True, fmt='.2f')
-    plt.title('Correlation Heatmap: Outcome Variables')
-    plt.xticks(rotation=45, ha='right')
-    plt.yticks(rotation=0)
-    plt.tight_layout()
-    plt.savefig(results_dir / 'outcome_correlation_heatmap.png', bbox_inches='tight', dpi=300)
-    plt.close()
-    
-    # 4. Categorical associations visualization
-    # Create a matrix to store Cramer's V values
-    n_cats = len(demographic_cols + independent_cols)
-    cramer_matrix = np.zeros((n_cats, n_cats))
+    charts['boxplots'] = {
+        cat: alt.Chart(df_melted).mark_boxplot().encode(
+            x=alt.X('Score Type:N', title='Score Type'),
+            y=alt.Y('Score:Q'),
+            color=alt.Color(cat + ':N'),
+            tooltip=['Score Type', 'Score', cat]
+        ).properties(title=f'Scores by {cat}', width=300, height=300).interactive()
+        for cat in demographic_cols + independent_cols
+    }
+
+    # Correlation heatmap
+    corr = df[outcome_cols].corr()
+    corr_reset = corr.reset_index().melt('index')
+    corr_reset.columns = ['Variable1', 'Variable2', 'Correlation']
+    charts['heatmap'] = alt.Chart(corr_reset).mark_rect().encode(
+        x='Variable1:O',
+        y='Variable2:O',
+        color=alt.Color('Correlation:Q', scale=alt.Scale(scheme='redblue', domainMid=0)),
+        tooltip=['Variable1', 'Variable2', 'Correlation']
+    ).properties(title='Correlation Heatmap: Outcome Variables', width=300, height=300)
+
+    # Cramér's V heatmap
     cat_vars = demographic_cols + independent_cols
-    
-    # Calculate Cramer's V for each pair of categorical variables
+    n_cats = len(cat_vars)
+    cramer_matrix = np.zeros((n_cats, n_cats))
     for i, var1 in enumerate(cat_vars):
         for j, var2 in enumerate(cat_vars):
-            if i > j:  # Only calculate for upper triangle
+            if i > j:
                 try:
-                    # Create contingency table
-                    contingency_table = pd.crosstab(df[var1], df[var2])
-                    # Calculate Cramer's V using scipy
-                    v = contingency.association(contingency_table, method='cramer')
+                    table = pd.crosstab(df[var1], df[var2])
+                    v = contingency.association(table, method='cramer')
                     cramer_matrix[i, j] = v
-                    cramer_matrix[j, i] = v  # Matrix is symmetric
+                    cramer_matrix[j, i] = v
                 except:
-                    # If calculation fails, set to 0
                     cramer_matrix[i, j] = 0
                     cramer_matrix[j, i] = 0
-    
-    # Plot Cramer's V heatmap
-    plt.figure(figsize=(12, 10))
-    mask = np.triu(np.ones_like(cramer_matrix), k=1)  # Mask upper triangle
-    sns.heatmap(cramer_matrix, annot=True, cmap='YlOrRd', center=0,
-                xticklabels=[x.split(' - ')[0] for x in cat_vars],
-                yticklabels=[x.split(' - ')[0] for x in cat_vars],
-                mask=mask, fmt='.2f', vmin=0, vmax=1)
-    plt.title("Categorical Associations (Cramer's V)")
-    plt.xticks(rotation=45, ha='right')
-    plt.yticks(rotation=0)
-    plt.tight_layout()
-    plt.savefig(results_dir / 'categorical_associations_heatmap.png', bbox_inches='tight', dpi=300)
-    plt.close()
-    
-    # 5. Create comprehensive pair plot with key variables
-    plt.figure(figsize=(20, 20))
-    comprehensive_pair = sns.pairplot(
-        df[analysis_cols],
-        diag_kind='hist',
-        plot_kws={'alpha': 0.6},
-        height=2.5
-    )
-    comprehensive_pair.fig.suptitle('Comprehensive Pair Plot: Key Variables', y=1.02)
-    comprehensive_pair.savefig(results_dir / 'key_variables_pair_plot.png', bbox_inches='tight', dpi=300)
-    plt.close()
-    
-    # 6. Create separate outcome pair plots colored by each categorical variable
-    for cat_var in demographic_cols + independent_cols:
-        plt.figure(figsize=(15, 15))
-        outcome_pair = sns.pairplot(
-            df[outcome_cols + [cat_var]],
-            diag_kind='hist',
-            plot_kws={'alpha': 0.6},
-            hue=cat_var,
-            height=2.5
-        )
-        outcome_pair.fig.suptitle(f'Outcome Variables by {cat_var}', y=1.02)
-        # Create a safe filename
-        safe_filename = cat_var.lower().replace(" ", "_").replace("?", "").replace("-", "_")
-        outcome_pair.savefig(results_dir / f'outcomes_by_{safe_filename}.png', bbox_inches='tight', dpi=300)
-        plt.close()
-    
-    print("\nVisualizations have been saved to the 'results' directory.") 
+    cramer_df = pd.DataFrame(cramer_matrix, index=cat_vars, columns=cat_vars).reset_index().melt('index')
+    cramer_df.columns = ['Variable1', 'Variable2', 'CramersV']
+    charts['cramer'] = alt.Chart(cramer_df).mark_rect().encode(
+        x='Variable1:O',
+        y='Variable2:O',
+        color=alt.Color('CramersV:Q', scale=alt.Scale(scheme='yelloworangered', domain=[0,1])),
+        tooltip=['Variable1', 'Variable2', 'CramersV']
+    ).properties(title="Categorical Associations (Cramér's V)", width=300, height=300)
+
+    # Pair plot
+    charts['pair_plot'] = alt.Chart(df).mark_point(filled=True, size=30).encode(
+        x=alt.X(alt.repeat('column'), type='quantitative', scale=alt.Scale(zero=False)),
+        y=alt.Y(alt.repeat('row'), type='quantitative', scale=alt.Scale(zero=False)),
+        tooltip=[
+            alt.Tooltip(alt.repeat('column'), type='quantitative'),
+            alt.Tooltip(alt.repeat('row'), type='quantitative')
+        ]
+    ).repeat(
+        row=outcome_cols,
+        column=outcome_cols
+    ).properties(title="Outcome Pair Plot")
+
+    return charts

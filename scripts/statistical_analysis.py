@@ -89,7 +89,7 @@ def perform_statistical_analysis(df, var_defs):
     demographic_vars = get_variables_by_type(var_defs, 'demographic', 'categorical')
     independent_vars = get_variables_by_type(var_defs, 'independent', 'categorical')
 
-    # Binary variables (2 categories)
+    # Binary variables (2 categories) - based on metadata
     binary_vars = [col for col in demographic_vars + independent_vars
                    if len(var_defs['variables'][col]['values']) == 2]
 

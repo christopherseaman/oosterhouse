@@ -4,6 +4,7 @@ import pandas as pd
 from pathlib import Path
 import os
 import sys
+import subprocess
 
 # Add project root to Python path
 project_root = Path(__file__).parent.parent
@@ -33,6 +34,19 @@ def get_category_label(col, value):
     return f'Group {value}'
 
 def main():
+    import shutil
+
+    # Clean results directory
+    results_dir = project_root / "results"
+    if results_dir.exists():
+        shutil.rmtree(results_dir)
+    results_dir.mkdir(exist_ok=True)
+
+    # Clean site directory
+    site_dir = project_root / "site"
+    if site_dir.exists():
+        shutil.rmtree(site_dir)
+    site_dir.mkdir(exist_ok=True)
     """Main function to orchestrate the analysis"""
     print("Loading data...")
     df, var_defs = load_data()
@@ -73,9 +87,32 @@ def main():
             print(f"    {group}: n={stats['n']}, Mean={stats['mean']:.3f}, SD={stats['std']:.3f}")
     
     print("\nCreating visualizations...")
-    create_visualizations(df, var_defs)
+    from scripts.visualization import create_visualizations
+    charts = create_visualizations(df, var_defs)
+
+    # Prepare t-test and ANOVA DataFrames if available
+    t_test_df = None
+    anova_df = None
+    try:
+        t_test_df = pd.read_csv("results/t_test_results.csv")
+    except Exception:
+        pass
+    try:
+        anova_df = pd.read_csv("results/anova_results.csv")
+    except Exception:
+        pass
+
+    from generate_report import generate_docs
+    generate_docs(df, var_defs, charts, t_test_results=t_test_df, anova_results=anova_df)
     
     print("\nAnalysis complete! Results saved to CSV files in the results directory.")
+
+    # Generate report markdown files
+    print("\nGenerating report markdown files...")
+
+    # Build MkDocs site
+    print("\nBuilding MkDocs site...")
+    subprocess.run(["mkdocs", "build"], check=True)
 
 if __name__ == "__main__":
     main() 

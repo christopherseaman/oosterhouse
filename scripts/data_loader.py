@@ -30,18 +30,25 @@ def load_data():
     for col, info in var_defs['variables'].items():
         if col not in df.columns:
             continue
-            
+
+        # Pre-map common string labels to integer codes if needed
+        if info.get('format') == 'categorical' and isinstance(info.get('values'), dict):
+            value_map = {v: int(k) for k, v in info['values'].items()}
+            # Only remap if data contains string labels
+            if df[col].dtype == object or pd.api.types.is_categorical_dtype(df[col]):
+                df[col] = df[col].replace(value_map)
+
         # Process based on variable type and format
         if info['type'] in ['demographic', 'independent'] and info['format'] == 'categorical':
             # Convert to categorical with codes and labels
             codes = [int(k) for k in info['values'].keys()]
             labels = list(info['values'].values())
-            df[col] = pd.Categorical(df[col], 
-                                   categories=codes,
-                                   ordered=True).rename_categories(labels)
+            df[col] = pd.Categorical(df[col],
+                                     categories=codes,
+                                     ordered=True).rename_categories(labels)
             # For analysis, we can use .codes to get numeric values (0-based)
             # and .astype(str) to get labels
-        
+
         elif info['type'] == 'outcome':
             # Ensure numeric type for outcomes
             df[col] = pd.to_numeric(df[col], errors='coerce')
