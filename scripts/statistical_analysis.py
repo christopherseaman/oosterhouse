@@ -94,13 +94,12 @@ def perform_statistical_analysis(df, var_defs):
                 'Cohens_d': cohens_d
             })
 
-    # ANCOVA for multi-category variables
-    for var in cat_vars:
-        # Prepare covariates: one-hot encode categoricals except the main var
+    # ANCOVA grouped by independent variable, covariates = demographics
+    independent_vars = [v for v, meta in var_defs['variables'].items() if meta.get('type') == 'independent']
+    for indep_var in independent_vars:
+        # Prepare covariates: one-hot encode demographics
         covariate_df = pd.DataFrame(index=df.index)
         for c in demographic_vars:
-            if c == var:
-                continue
             if pd.api.types.is_numeric_dtype(df[c]):
                 covariate_df[c] = df[c]
             else:
@@ -108,8 +107,9 @@ def perform_statistical_analysis(df, var_defs):
                 covariate_df = pd.concat([covariate_df, dummies], axis=1)
         covariate_cols = list(covariate_df.columns)
         df_with_covs = pd.concat([df, covariate_df], axis=1)
-        glm_res = perform_glm_analysis(df_with_covs, var_defs, var, outcome_cols, covariate_cols)
+        glm_res = perform_glm_analysis(df_with_covs, var_defs, indep_var, outcome_cols, covariate_cols)
         for res in glm_res:
+            res['Group_By_Independent'] = indep_var
             anova_results.append(res)
             all_p_values.append(res['p_value'])
             for cov_eff in res['Covariate_Effects'].values():

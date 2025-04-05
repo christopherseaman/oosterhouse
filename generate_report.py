@@ -177,32 +177,42 @@ def write_analysis(df, var_defs, charts, t_test_results=None, anova_results=None
     content += "_Note: All p-values are adjusted using False Discovery Rate (FDR) correction to control for multiple comparisons._\n\n"
     
     if anova_results is not None and not anova_results.empty:
+        grouped = {}
         for row in anova_results.to_dict('records'):
-            effect_size_name = 'partial_eta_squared'
-            effect_size_value = row.get(effect_size_name, 0)
-            
-            content += f"### {row['Variable']} on {row['Outcome']}\n\n"
-            
-            # Embed ANCOVA plot (boxplot) for this variable immediately after heading
-            boxplots = charts.get('boxplots', {})
-            for key, chart in boxplots.items():
-                if key.strip().lower() == str(row['Variable']).strip().lower():
-                    spec = chart.to_json()
-                    content += f"```vegalite\n{spec}\n```\n\n"
-                    break
+            group = row.get('Group_By_Independent', 'Other')
+            grouped.setdefault(group, []).append(row)
 
-            content += f"- **F** = {row['F_statistic']:.3f}\n"
-            content += f"- **p** = {row['p_value']:.3f} (FDR-adjusted)\n"
-            content += f"- **{effect_size_name.replace('_', ' ').title()}** = {effect_size_value:.3f}\n\n"
+        for indep_var, rows in grouped.items():
+            indep_name = indep_var.replace(' - Selected Choice', '')
+            content += f"### {indep_name}\n\n"
+            for row in rows:
+                effect_size_name = 'partial_eta_squared'
+                effect_size_value = row.get(effect_size_name, 0)
+                
+                outcome_name = row['Outcome'].replace(' - Selected Choice', '')
+                content += f"#### {outcome_name}\n\n"
+                
+                # Embed ANCOVA plot (boxplot) for this variable immediately after heading
+                boxplots = charts.get('boxplots', {})
+                for key, chart in boxplots.items():
+                    if key.strip().lower() == str(row['Variable']).strip().lower():
+                        spec = chart.to_json()
+                        content += f"```vegalite\n{spec}\n```\n\n"
+                        break
 
-            # Add covariate effects table without heading
-            covariate_effects = row.get('Covariate_Effects', {})
-            if covariate_effects:
-                content += "| Covariate | F | p-value (FDR-adjusted) | Partial η² |\n"
-                content += "|-----------|---|------------------------|------------|\n"
-                for cov, effect in covariate_effects.items():
-                    content += f"| {cov} | {effect['F']:.3f} | {effect['p_value']:.3f} | {effect['partial_eta_sq']:.3f} |\n"
-                content += "\n"
+                content += f"- **F** = {row['F_statistic']:.3f}\n"
+                content += f"- **p** = {row['p_value']:.3f} (FDR-adjusted)\n"
+                content += f"- **{effect_size_name.replace('_', ' ').title()}** = {effect_size_value:.3f}\n\n"
+
+                # Add covariate effects table without heading
+                covariate_effects = row.get('Covariate_Effects', {})
+                if covariate_effects:
+                    content += "| Covariate | F | p-value (FDR-adjusted) | Partial η² |\n"
+                    content += "|-----------|---|------------------------|------------|\n"
+                    for cov, effect in covariate_effects.items():
+                        cov_name = cov.replace(' - Selected Choice', '')
+                        content += f"| {cov_name} | {effect['F']:.3f} | {effect['p_value']:.3f} | {effect['partial_eta_sq']:.3f} |\n"
+                    content += "\n"
     else:
         content += "_No ANCOVA results available._\n\n"
 
