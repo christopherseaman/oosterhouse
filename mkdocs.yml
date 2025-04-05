@@ -14,8 +14,8 @@ theme:
     - content.action.view
 nav:
   - Home: index.md
-  - Data Summary: data_summary.md
-  - Exploratory Data Analysis: eda.md
+  - Variable Summary: data_summary.md
+  - Bivariate Relationships: eda.md
   - Statistical Analysis: analysis.md
 plugins:
   - search

@@ -34,7 +34,7 @@ def write_index():
     (DOCS_DIR / "index.md").write_text(content)
 
 def write_data_summary(df, var_defs, charts):
-    content = "# Data Summary\n\n"
+    content = "# Variable Summary\n\n"
 
     # Demographics and Independents
     sections = {
@@ -54,34 +54,42 @@ def write_data_summary(df, var_defs, charts):
     for section, vars_list in sections.items():
         content += f"## {section}\n\n"
         for var in vars_list:
-            # Embed univariate plot if available
+            # Add variable heading first
+            content += f"### {var}\n\n"
+
+            # Prepare univariate plot markdown to embed after table
             safe_var = var.replace("?", "").replace("-", "").replace(" ", "_").replace("/", "_").replace("\\", "_")
             chart = charts.get('distributions', {}).get(var) or charts.get('distributions', {}).get(safe_var)
+            plot_md = ""
             if chart:
                 spec = chart.to_json()
-                content += f"### Distribution of {var}\n\n"
-                content += f"```vegalite\n{spec}\n```\n\n"
+                plot_md = f"```vegalite\n{spec}\n```\n\n"
 
-            # Add table for this variable
-            if 'Variable' in df.columns:
-                subset = df[df['Variable'] == var]
-                content += f"### {var}\n\n"
-                if not subset.empty:
-                    content += subset.to_markdown(index=False) + "\n\n"
-                else:
-                    content += "_No data available._\n\n"
+            # Add frequency table for this variable (no extra header)
+            # Remove first frequency table block entirely
+
+            # Embed univariate plot above table
+            content += plot_md
+
+            # Add frequency table (always)
+            if var in df.columns:
+                freq = df[var].value_counts(dropna=False).reset_index()
+                freq.columns = [var, 'Count']
+                content += freq.to_markdown(index=False) + "\n\n"
+            else:
+                content += "_No data available._\n\n"
 
     # Score distributions
     score_cols = ["Total Score Avg", "SS1 avg", "SS2 avg", "SS3 avg", "SS4 avg"]
     df_scores = df[score_cols] if all(c in df.columns for c in score_cols) else pd.DataFrame()
 
     if not df_scores.empty:
-        # Boxplot
+        # Prepare boxplot to embed later
         boxplot = charts.get('score_boxplot')
+        boxplot_md = ""
         if boxplot:
             spec = boxplot.to_json()
-            content += "### Score Distributions (Boxplot)\n\n"
-            content += f"```vegalite\n{spec}\n```\n\n"
+            boxplot_md = f"```vegalite\n{spec}\n```\n\n"
 
         # Layered histogram
         layered_hist = charts.get('score_layered_hist')
@@ -90,14 +98,32 @@ def write_data_summary(df, var_defs, charts):
             content += "### Layered Histograms of Scores\n\n"
             content += f"```vegalite\n{spec}\n```\n\n"
 
-        # Score summary table
+        # Embed plots first
         content += "## Score Summaries\n\n"
+        if boxplot_md:
+            content += boxplot_md + "\n"
+        layered_hist = charts.get('score_layered_hist')
+        if layered_hist:
+            spec = layered_hist.to_json()
+            content += f"```vegalite\n{spec}\n```\n\n"
+
+        # Then add score summary table
         content += df_scores.describe().transpose().to_markdown() + "\n\n"
+
+        # Embed boxplot after Score Summaries header and table
+        # Embed plots immediately after Score Summaries header
+        if boxplot_md:
+            content += boxplot_md + "\n"
+
+        layered_hist = charts.get('score_layered_hist')
+        if layered_hist:
+            spec = layered_hist.to_json()
+            content += f"```vegalite\n{spec}\n```\n\n"
 
     (DOCS_DIR / "data_summary.md").write_text(content)
 
 def write_eda(df, var_defs, charts):
-    content = "# Exploratory Data Analysis\n\n"
+    content = "# Bivariate Relationships\n\n"
 
     # Pair plot
     pair_plot = charts.get('pair_plot')
@@ -107,25 +133,20 @@ def write_eda(df, var_defs, charts):
         content += f"```vegalite\n{spec}\n```\n\n"
 
     # Correlation heatmap
-    corr_heatmap = charts.get('correlation_heatmap')
+    corr_heatmap = charts.get('heatmap')
     if corr_heatmap:
         spec = corr_heatmap.to_json()
         content += "## Correlation Heatmap\n\n"
         content += f"```vegalite\n{spec}\n```\n\n"
 
     # Categorical associations heatmap
-    cat_assoc = charts.get('categorical_associations_heatmap')
+    cat_assoc = charts.get('cramer')
     if cat_assoc:
         spec = cat_assoc.to_json()
         content += "## Categorical Associations\n\n"
         content += f"```vegalite\n{spec}\n```\n\n"
 
-    # Scores by categories
-    scores_by = charts.get('scores_by', {})
-    for var, chart in scores_by.items():
-        spec = chart.to_json()
-        content += f"## Scores by {var}\n\n"
-        content += f"```vegalite\n{spec}\n```\n\n"
+    # REMOVE Scores by categories (boxplots) from EDA
 
     (DOCS_DIR / "eda.md").write_text(content)
 
@@ -133,18 +154,57 @@ def write_analysis(df, var_defs, charts, t_test_results=None, anova_results=None
     content = "# Statistical Analysis\n\n"
 
     # T-tests
-    content += "## T-Tests\n\n"
+    content += "## t-tests\n\n"
     if t_test_results is not None and not t_test_results.empty:
-        content += t_test_results.to_markdown(index=False) + "\n\n"
+        predictors = t_test_results['Variable'].unique()
+        for predictor in predictors:
+            content += f"### {predictor}\n\n"
+            subset = t_test_results[t_test_results['Variable'] == predictor].drop(columns=['Variable'], errors='ignore')
+
+            # Embed plot above table
+            scores_by = charts.get('boxplots', {})
+            for key, chart in scores_by.items():
+                if key.strip().lower() == predictor.strip().lower():
+                    spec = chart.to_json()
+                    content += f"```vegalite\n{spec}\n```\n\n"
+
+            content += subset.to_markdown(index=False) + "\n\n"
     else:
         content += "_No t-test results available._\n\n"
 
     # ANOVA
     content += "## ANOVA\n\n"
     if anova_results is not None and not anova_results.empty:
-        content += anova_results.to_markdown(index=False) + "\n\n"
+        for _, row in anova_results.iterrows():
+            content += f"### {row['Variable']} on {row['Outcome']}\n\n"
+            content += f"- **F** = {row['F_statistic']:.3f}\n"
+            content += f"- **p** = {row['p_value']:.3f}\n"
+            content += f"- **Eta-squared** = {row['eta_squared']:.3f}\n\n"
+            # Parse group stats
+            try:
+                import ast
+                group_stats_str = row['Group_Stats'].replace('nan', 'None')
+                group_stats = ast.literal_eval(group_stats_str)
+                content += "| Group | n | Mean | SD |\n"
+                content += "|--------|----|-------|-------|\n"
+                for group, stats in group_stats.items():
+                    mean = float(stats.get('mean', float('nan')))
+                    std = float(stats.get('std', float('nan')))
+                    n = int(stats.get('n', 0))
+                    content += f"| {group} | {n} | {mean:.3f} | {std:.3f} |\n"
+                content += "\n"
+            except Exception:
+                content += "_Group stats unavailable._\n\n"
     else:
         content += "_No ANOVA results available._\n\n"
+
+    # Debug info for group stats parsing failures
+    import ast
+    for _, row in anova_results.iterrows():
+        try:
+            ast.literal_eval(row['Group_Stats'])
+        except Exception as e:
+            content += f"<!-- Failed to parse group stats for {row['Variable']} on {row['Outcome']}: {e} -->\n"
 
     # Drill-down chart
     drilldown = charts.get('drilldown_chart')

@@ -12,52 +12,45 @@
 
 ---
 
-## [x] 1. Split Demographics and Independents into separate tables **within** their headings
-
+## [ ] 1. Data Summary has two headers per var in Demographics and Independent
 - Acceptance criteria:
-  - Under "Demographics", each variable (e.g., Gender, School, Year) has its own small table with heading.
-  - Under "Independent Variables", each variable (e.g., Eating disorder history, Told to change weight, Weight-sensitive sport, Endurance sport) has its own small table with heading.
-  - Improves readability over one large table.
+  - Each variable has **only one header**.
+  - The header is followed by the frequency table.
+  - The univariate plot is **below** the table, not above or with its own header.
 
 ---
 
-## [x] 2. Populate EDA, Explore, and Visualizations pages with appropriate plots
-
+## [ ] 2. Score Distributions graph should be in the Score summaries section and should not have a separate header
 - Acceptance criteria:
-  - **Data Summary** add univariate plots for each variable just below subheading
-  - **EDA** contains multivariate plots like correlation heatmaps and categorical association heatmaps, pair plot, and Scores by XXX (do not remove any existing plots)
-  - No pages are blank; all contain relevant, well-organized content.
+  - The score boxplot appears **inside** the Score Summaries section.
+  - It does **not** have its own separate header.
 
 ---
 
-## [x] 3. Fix Statistics page formatting
-
+## [ ] 3. Move all Data Summary graphs to be below their respective tables
 - Acceptance criteria:
-  - T-test results are displayed if available; otherwise, a clear message.
-  - ANOVA group stats are formatted as readable nested tables or lists, **not raw dicts**.
-  - All tables are easy to read and interpret.
+  - For each variable, the frequency table appears **first**.
+  - The univariate plot appears **immediately below** the table.
 
 ---
 
-## [x] 4. Investigate missing t-test results
-
+## [ ] 4. t-tests should be separated by prediction variable, each with their own header. Move the scores vs XXX graphs below each respective table on this page
 - Acceptance criteria:
-  - Determine if t-test CSV is empty due to data or code issue.
-  - If data issue, document it.
-  - If code issue, fix so t-tests are performed and results saved.
+  - The t-tests section is organized by predictor variable.
+  - Each predictor has a header.
+  - The t-test table for that predictor appears below the header.
+  - The "Scores by XXX" plot appears **below** the table.
 
 ---
 
-## [ ] 5. Validate each item above after implementation
-
+## [ ] 5. ANOVA still lists "Group stats unavailable" for everything. Feels like we're missing output
 - Acceptance criteria:
-  - After each change, regenerate the report.
-  - Rebuild the site.
-  - Check the relevant HTML pages to ensure criteria are met **before** marking the item as done.
+  - ANOVA results include parsed group stats as nested tables.
+  - No "Group stats unavailable" messages appear.
 
 ---
 
-<!--- #FIXME later:
+<!--- #FIXME later: DO NOT REMOVE
 [ ] Remove "- Selected Choice" from variable names
 [ ] Mermaid diagram render
 [ ] Pairplot histograms on the diagonal

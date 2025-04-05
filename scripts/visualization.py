@@ -117,4 +117,16 @@ def create_visualizations(df, var_defs=None):
         column=outcome_cols
     ).properties(title="Outcome Pair Plot")
 
+    # Score boxplot
+    df_scores = df[outcome_cols].melt(var_name='Score Type', value_name='Score')
+    charts['score_boxplot'] = alt.Chart(df_scores).mark_boxplot().encode(
+        x=alt.X('Score Type:N', title='Score Type'),
+        y=alt.Y('Score:Q', title='Score'),
+        color='Score Type:N'
+    ).properties(
+        title='Score Distributions',
+        width=300,
+        height=300
+    )
+
     return charts

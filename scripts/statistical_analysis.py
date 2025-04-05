@@ -103,10 +103,15 @@ def perform_statistical_analysis(df, var_defs):
     all_p_values = []
 
     # --- T-tests for binary variables ---
+    print(f"Binary variables for t-tests: {binary_vars}")
     for var in binary_vars:
+        print(f"\nProcessing t-tests for: {var}")
         for outcome in outcome_cols:
-            groups = df[var].unique()
+            print(f"  Outcome: {outcome}")
+            groups = df[var].dropna().unique()
+            print(f"    Unique groups found: {groups}")
             if len(groups) != 2:
+                print(f"    Skipping: Expected 2 groups, found {len(groups)}")
                 continue  # skip if not exactly 2 groups
             group1_data = df[df[var] == groups[0]][outcome]
             group2_data = df[df[var] == groups[1]][outcome]
@@ -154,9 +159,9 @@ def perform_statistical_analysis(df, var_defs):
             group_stats = {}
             for name, group in df.groupby(var, observed=True)[outcome]:
                 group_stats[name] = {
-                    'n': len(group),
-                    'mean': group.mean(),
-                    'std': group.std()
+                    'n': int(len(group)),
+                    'mean': float(group.mean()),
+                    'std': float(group.std())
                 }
 
             anova_results.append({
@@ -214,6 +219,11 @@ def perform_statistical_analysis(df, var_defs):
 
     print("\nAnalysis complete! Results saved to CSV files in the results directory.")
 
+    # Convert results to DataFrames
+    t_test_df = pd.DataFrame(t_test_results)
+    anova_df = pd.DataFrame(anova_results)
+
+    return t_test_df, anova_df
     return t_test_results, anova_results
 
 def perform_statistical_analysis_with_var_defs(df, var_defs):
