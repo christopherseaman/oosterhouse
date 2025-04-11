@@ -22,8 +22,8 @@
             "type": "demographic",
             "format": "categorical",
             "values": {
-                "1": "Female",
-                "2": "Male"
+                "1": "Male",
+                "2": "Female"
             }
         },
         "What school do you attend?": {

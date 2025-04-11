@@ -126,6 +126,7 @@ def write_analysis(df, var_defs, charts, t_test_results=None, anova_results=None
     
     # T-tests
     content += "## t-tests\n\n"
+    content += "_Note: Both raw p-values and global FDR-adjusted p-values are shown. The FDR correction controls for multiple comparisons to reduce false positives._\n\n"
     if t_test_results is not None and not t_test_results.empty:
         predictors = t_test_results['Variable'].unique()
         for predictor in predictors:
@@ -138,14 +139,25 @@ def write_analysis(df, var_defs, charts, t_test_results=None, anova_results=None
                 if key.strip().lower() == predictor.strip().lower():
                     spec = chart.to_json()
                     content += f"```vegalite\n{spec}\n```\n\n"
-
-            content += subset.to_markdown(index=False) + "\n\n"
+            
+            # Rename columns for display to show both raw and global FDR p-values
+            display_subset = subset.copy()
+            if 'raw_p_value' in display_subset.columns and 'global_adj_p_value' in display_subset.columns:
+                display_subset = display_subset.rename(columns={
+                    'raw_p_value': 'p-value (raw)',
+                    'global_adj_p_value': 'p-value (FDR-adjusted)'
+                })
+                # Remove the default p_value column to avoid confusion
+                if 'p_value' in display_subset.columns:
+                    display_subset = display_subset.drop(columns=['p_value'])
+            
+            content += display_subset.to_markdown(index=False) + "\n\n"
     else:
         content += "_No t-test results available._\n\n"
 
     # ANCOVA with demographic covariates
     content += "## ANCOVA with Demographic Covariates\n\n"
-    content += "_Note: All p-values are adjusted using False Discovery Rate (FDR) correction to control for multiple comparisons._\n\n"
+    content += "_Note: We show three p-values: raw (unadjusted), global FDR-adjusted (across all tests), and research question FDR-adjusted (across ANOVAs only). FDR correction controls for multiple comparisons to reduce false positives._\n\n"
     
     if anova_results is not None and not anova_results.empty:
         grouped = {}
@@ -170,16 +182,21 @@ def write_analysis(df, var_defs, charts, t_test_results=None, anova_results=None
                         break
 
                 content += f"- **F** = {row['F_statistic']:.3f}\n"
-                content += f"- **p** = {row['p_value']:.3f} (FDR-adjusted)\n"
+                content += f"- **p (raw)** = {row.get('raw_p_value', row['p_value']):.3f}\n"
+                content += f"- **p (global FDR)** = {row.get('global_adj_p_value', row['p_value']):.3f}\n"
+                content += f"- **p (ANOVA FDR)** = {row.get('anova_adj_p_value', row['p_value']):.3f}\n"
                 content += f"- **{effect_size_name.replace('_', ' ').title()}** = {effect_size_value:.3f}\n\n"
 
                 # Add covariate effects table without heading
                 covariate_effects = row.get('Covariate_Effects', {})
                 if covariate_effects:
-                    content += "| Covariate | F | p-value (FDR-adjusted) | Partial η² |\n"
-                    content += "|-----------|---|------------------------|------------|\n"
+                    content += "| Covariate | F | p-value (raw) | p-value (global FDR) | p-value (ANOVA FDR) | Partial η² |\n"
+                    content += "|-----------|---|--------------|---------------------|-------------------|------------|\n"
                     for cov, effect in covariate_effects.items():
-                        content += f"| {cov} | {effect['F']:.3f} | {effect['p_value']:.3f} | {effect['partial_eta_sq']:.3f} |\n"
+                        raw_p = effect.get('raw_p_value', effect['p_value'])
+                        global_adj_p = effect.get('global_adj_p_value', effect['p_value'])
+                        anova_adj_p = effect.get('anova_adj_p_value', effect['p_value'])
+                        content += f"| {cov} | {effect['F']:.3f} | {raw_p:.3f} | {global_adj_p:.3f} | {anova_adj_p:.3f} | {effect['partial_eta_sq']:.3f} |\n"
                     content += "\n"
     else:
         content += "_No ANCOVA results available._\n\n"
