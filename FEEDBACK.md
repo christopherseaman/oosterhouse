@@ -1,9 +1,9 @@
-## Responses to Feedback
+## Feedback
 
-### False Discovery Rate (FDR)
+### False Discovery Rate (FDR) (Update not yet complete)
 FDR controls the expected proportion of false positives among significant results when conducting multiple tests. When analyzing many variables simultaneously, the chance of finding "significant" results purely by chance increases substantially - this is known as the multiple comparisons problem. Unlike traditional Bonferroni correction which controls the probability of making even one false discovery, FDR is more powerful as it allows a small proportion of false positives while maintaining statistical rigor. 
 
-We've implemented two FDR approaches:
+The analysis includes (WIP: read "will include") two FDR approaches:
 
 1. **Global FDR**: Applied across all tests (t-tests, ANOVAs, covariates) to provide the most conservative control against false positives.
 
@@ -19,7 +19,7 @@ The Bivariate Relationships tab shows how variables relate to each other through
 
 These visualizations help identify patterns before formal testing and provide context for statistical findings.
 
-### Gender Coding Correction
+### Gender Coding Correction (Complete, not published on website until FDR complete)
 I've updated the variable definitions to correctly reflect that Males correspond to "2" and Females to "1" on the gender variable. This change has been implemented in the code and will be reflected in all future analyses and reports.
 
 ### Outliers in Graphs
@@ -33,5 +33,3 @@ Would you share your p-values? That might help me understand the differences. It
 3. **Equal Variance Assumption**: Our t-tests assume equal variances by default
 
 Note: While our code uses 'omit' for handling potential missing values, our analysis of the dataset shows no missing values in any of the analysis variables, so this is unlikely to contribute to p-value differences with SPSS.
-
-We've updated the code to show both raw and FDR-adjusted p-values for easier comparison with SPSS.
