@@ -1,11 +1,10 @@
 pandas
 numpy
 scipy
+statsmodels
+pingouin
 altair
-tabulate
 mkdocs
 mkdocs-material
-mkdocs-charts-plugin
 jinja2
 pyyaml
-pingouin
