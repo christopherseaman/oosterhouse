@@ -57,7 +57,9 @@ def main():
         print(f"\nResults for {result['Variable']} on {result['Outcome']}:")
         print(f"  {result['Group1']}: Mean = {result['Group1_Mean']:.3f}, SD = {result['Group1_SD']:.3f}")
         print(f"  {result['Group2']}: Mean = {result['Group2_Mean']:.3f}, SD = {result['Group2_SD']:.3f}")
-        print(f"  t({len(df)-2}) = {result['t_statistic']:.3f}, p = {result['p_value']:.3f}")
+        # Use 'dof' from pingouin result if available, otherwise approximate
+        dof_str = f"{result.get('dof', len(df)-2):.1f}"
+        print(f"  t({dof_str}) = {result['t_statistic']:.3f}, raw_p = {result['raw_p_value']:.3f}, adj_p = {result['p_value']:.3f}")
         print(f"  Cohen's d = {result['Cohens_d']:.3f}")
     
     # Print ANOVA results

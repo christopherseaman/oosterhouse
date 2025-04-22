@@ -64,13 +64,10 @@ def perform_statistical_analysis(df, var_defs):
     t_test_results = []
     anova_results = []
     
-    # For global FDR correction (across all tests)
-    all_p_values = []
-    all_p_value_sources = []  # Track the source of each p-value for mapping back
-    
-    # For research question FDR (ANOVAs only)
-    anova_p_values = []
-    anova_p_value_sources = []
+    # Lists to collect p-values for separate FDR corrections
+    t_test_raw_p_values = []
+    anova_raw_p_values = []
+    anova_p_value_sources = [] # Tracks source (main/covariate) for mapping ANOVA adjusted p-values
 
     # T-tests
     for var in binary_vars:
@@ -80,18 +77,24 @@ def perform_statistical_analysis(df, var_defs):
                 continue
             group1 = df[df[var] == groups[0]][outcome]
             group2 = df[df[var] == groups[1]][outcome]
-            t_stat, p_val = stats.ttest_ind(group1, group2, nan_policy='omit')
-            # Track p-value for global FDR
-            all_p_values.append(p_val)
-            all_p_value_sources.append(('t_test', len(t_test_results)))
-            # Calculate Cohen's d
-            n1, n2 = len(group1), len(group2)
-            var1, var2 = np.var(group1, ddof=1), np.var(group2, ddof=1)
-            pooled_sd = np.sqrt(((n1 - 1)*var1 + (n2 - 1)*var2) / (n1 + n2 - 2))
-            cohens_d = (np.mean(group1) - np.mean(group2)) / pooled_sd if pooled_sd > 0 else 0
+            # Perform Welch's t-test using pingouin (handles NaNs, provides Cohen's d)
+            # correction=True enables Welch's test (unequal variances)
+            ttest_res = pg.ttest(group1, group2, correction=True)
+            
+            # Extract results from the pingouin DataFrame
+            t_stat = ttest_res['T'].iloc[0]
+            raw_p_val = ttest_res['p-val'].iloc[0]
+            cohens_d = ttest_res['cohen-d'].iloc[0]
+            dof = ttest_res['dof'].iloc[0] # Degrees of freedom might be useful too
+            
+            t_test_raw_p_values.append(raw_p_val) # Collect raw p-value for t-test FDR
+            
             t_test_results.append({
                 'Variable': var,
                 'Outcome': outcome,
+                # Store raw p-value, will be adjusted later
+                'raw_p_value': raw_p_val,
+                'p_value': raw_p_val, # Placeholder, overwritten later
                 'Group1': groups[0],
                 'Group2': groups[1],
                 'Group1_Mean': group1.mean(),
@@ -99,7 +102,7 @@ def perform_statistical_analysis(df, var_defs):
                 'Group1_SD': group1.std(),
                 'Group2_SD': group2.std(),
                 't_statistic': t_stat,
-                'p_value': p_val,
+                'dof': dof,
                 'Cohens_d': cohens_d
             })
 
@@ -118,66 +121,58 @@ def perform_statistical_analysis(df, var_defs):
         df_with_covs = pd.concat([df, covariate_df], axis=1)
         glm_res = perform_glm_analysis(df_with_covs, var_defs, indep_var, outcome_cols, covariate_cols)
         for res in glm_res:
+            # Store raw p-value from main effect, adjust later
+            raw_main_p = res['p_value'] # Assumes perform_glm returns raw p-unc
+            res['raw_p_value'] = raw_main_p
+            res['p_value'] = raw_main_p # Placeholder, overwritten later
             res['Group_By_Independent'] = indep_var
             anova_results.append(res)
-            
-            # Track p-value for global FDR
-            all_p_values.append(res['p_value'])
-            all_p_value_sources.append(('anova', len(anova_results) - 1))
-            
-            # Track p-value for research question FDR (ANOVAs only)
-            anova_p_values.append(res['p_value'])
+
+            # Track main effect p-value for ANOVA FDR
+            anova_raw_p_values.append(raw_main_p)
             anova_p_value_sources.append(('main', len(anova_results) - 1))
-            
-            # Track covariate p-values for both FDR approaches
+
+            # Track covariate p-values for ANOVA FDR
             for cov_name, cov_eff in res['Covariate_Effects'].items():
-                # For global FDR
-                all_p_values.append(cov_eff['p_value'])
-                all_p_value_sources.append(('covariate', len(anova_results) - 1, cov_name))
-                
-                # For research question FDR
-                anova_p_values.append(cov_eff['p_value'])
+                raw_cov_p = cov_eff['p_value'] # Assumes perform_glm returns raw p-unc
+                cov_eff['raw_p_value'] = raw_cov_p
+                cov_eff['p_value'] = raw_cov_p # Placeholder, overwritten later
+                anova_raw_p_values.append(raw_cov_p)
                 anova_p_value_sources.append(('covariate', len(anova_results) - 1, cov_name))
 
-    # Apply global FDR correction (across all tests)
-    _, global_corrected_pvals, _, _ = multipletests(all_p_values, method='fdr_bh')
-    
-    # Apply research question FDR correction (ANOVAs only)
-    if anova_p_values:
-        _, anova_corrected_pvals, _, _ = multipletests(anova_p_values, method='fdr_bh')
-    
-    # Store raw and both types of FDR-adjusted p-values
-    for i, (source_type, *source_idx) in enumerate(all_p_value_sources):
-        raw_p = all_p_values[i]
-        global_adj_p = global_corrected_pvals[i]
-        
-        if source_type == 't_test':
-            idx = source_idx[0]
-            t_test_results[idx]['raw_p_value'] = raw_p
-            t_test_results[idx]['global_adj_p_value'] = global_adj_p
-            t_test_results[idx]['p_value'] = global_adj_p  # Keep adjusted as the default p_value
-        elif source_type == 'anova':
-            idx = source_idx[0]
-            anova_results[idx]['raw_p_value'] = raw_p
-            anova_results[idx]['global_adj_p_value'] = global_adj_p
-            anova_results[idx]['p_value'] = global_adj_p  # Keep adjusted as the default p_value
-        elif source_type == 'covariate':
-            anova_idx, cov_name = source_idx
-            anova_results[anova_idx]['Covariate_Effects'][cov_name]['raw_p_value'] = raw_p
-            anova_results[anova_idx]['Covariate_Effects'][cov_name]['global_adj_p_value'] = global_adj_p
-            anova_results[anova_idx]['Covariate_Effects'][cov_name]['p_value'] = global_adj_p
-    
-    # Store research question FDR-adjusted p-values for ANOVAs
-    if anova_p_values:
+    # Apply FDR correction separately for t-tests
+    if t_test_raw_p_values:
+        _, t_test_corrected_pvals, _, _ = multipletests(t_test_raw_p_values, method='fdr_bh')
+    else:
+        t_test_corrected_pvals = []
+
+    # Apply FDR correction for ANOVAs (main effects and covariates together)
+    if anova_raw_p_values:
+        _, anova_corrected_pvals, _, _ = multipletests(anova_raw_p_values, method='fdr_bh')
+    else:
+        anova_corrected_pvals = []
+
+    # Store FDR-adjusted p-values for t-tests
+    if t_test_raw_p_values:
+        for i, result in enumerate(t_test_results):
+            # Raw p-value was already stored during collection
+            result['adj_p_value'] = t_test_corrected_pvals[i]
+            result['p_value'] = result['adj_p_value'] # Update main p-value field
+
+    # Store FDR-adjusted p-values for ANOVAs
+    if anova_raw_p_values:
         for i, (source_type, *source_idx) in enumerate(anova_p_value_sources):
-            anova_adj_p = anova_corrected_pvals[i]
-            
+            # Raw p-value was already stored during collection
+            adj_p = anova_corrected_pvals[i]
+
             if source_type == 'main':
                 idx = source_idx[0]
-                anova_results[idx]['anova_adj_p_value'] = anova_adj_p
+                anova_results[idx]['adj_p_value'] = adj_p
+                anova_results[idx]['p_value'] = adj_p # Update main p-value field
             elif source_type == 'covariate':
                 anova_idx, cov_name = source_idx
-                anova_results[anova_idx]['Covariate_Effects'][cov_name]['anova_adj_p_value'] = anova_adj_p
+                anova_results[anova_idx]['Covariate_Effects'][cov_name]['adj_p_value'] = adj_p
+                anova_results[anova_idx]['Covariate_Effects'][cov_name]['p_value'] = adj_p # Update main p-value field
 
     print("Analysis complete.")
     t_test_df = pd.DataFrame(t_test_results)
