@@ -17,6 +17,7 @@ nav:
   - Variable Summary: data_summary.md
   - Bivariate Relationships: eda.md
   - Statistical Analysis: analysis.md
+  - Feedback: feedback.md
 plugins:
   - search
   - charts
