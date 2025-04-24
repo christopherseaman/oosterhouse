@@ -10,10 +10,64 @@ DOCS_DIR = Path("docs")
 ASSETS_DIR = DOCS_DIR / "assets"
 IMAGES_DIR = ASSETS_DIR / "images"
 TABLES_DIR = ASSETS_DIR / "tables"
+STYLESHEETS_DIR = DOCS_DIR / "stylesheets"
 
 def setup_dirs():
-    for d in [DOCS_DIR, IMAGES_DIR, TABLES_DIR]:
+    for d in [DOCS_DIR, IMAGES_DIR, TABLES_DIR, STYLESHEETS_DIR]:
         d.mkdir(parents=True, exist_ok=True)
+
+def create_custom_css():
+    css_content = """/* Increase overall container width */
+.md-grid {
+    max-width: 90% !important;
+}
+
+/* Increase main content width */
+.md-main__inner {
+    max-width: 90% !important;
+    margin: 0 auto;
+}
+
+/* Ensure content area takes up more space */
+.md-content__inner {
+    margin: 0 .8rem 1.2rem;
+    padding-top: 1.2rem;
+    width: 100%;
+}
+
+/* Make navigation sidebar narrower */
+.md-sidebar {
+    width: 12.1rem;
+}
+
+/* Adjust content position relative to narrower sidebar */
+@media screen and (min-width: 76.25em) {
+    .md-sidebar--primary {
+        left: 0;
+    }
+    .md-sidebar--secondary {
+        right: 0;
+        margin-left: 0;
+        transform: none;
+    }
+}
+
+/* Ensure tables can expand to full width */
+.md-typeset__table {
+    display: table !important;
+    width: 100% !important;
+}
+
+.md-typeset table:not([class]) {
+    display: table !important;
+    width: 100% !important;
+}
+
+/* Make sure code blocks can expand */
+.md-typeset pre {
+    max-width: none;
+}"""
+    (STYLESHEETS_DIR / "extra.css").write_text(css_content)
 
 def copy_assets():
     # Copy CSVs only
@@ -213,6 +267,7 @@ def write_analysis(df, var_defs, charts, t_test_results=None, anova_results=None
 
 def generate_docs(df, var_defs, charts, t_test_results=None, anova_results=None):
     setup_dirs()
+    create_custom_css()
     copy_assets()
     write_index()
     write_data_summary(df, var_defs, charts)
