@@ -1,0 +1,857 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://christopherseaman.github.io/oosterhouse/feedback/">
+      
+      
+        <link rel="prev" href="../analysis/">
+      
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.12">
+    
+    
+      
+        <title>Feedback - IES-3 Data Analysis Report</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.2afb09e1.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#feedback" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="IES-3 Data Analysis Report" class="md-header__button md-logo" aria-label="IES-3 Data Analysis Report" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            IES-3 Data Analysis Report
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Feedback
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="IES-3 Data Analysis Report" class="md-nav__button md-logo" aria-label="IES-3 Data Analysis Report" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    IES-3 Data Analysis Report
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data_summary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Variable Summary
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../eda/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Bivariate Relationships
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Statistical Analysis
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Feedback
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Feedback
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#feedback" class="md-nav__link">
+    <span class="md-ellipsis">
+      Feedback
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Feedback">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#false-discovery-rate-fdr-correction" class="md-nav__link">
+    <span class="md-ellipsis">
+      False Discovery Rate (FDR) Correction
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bivariate-relationships-tab" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bivariate Relationships Tab
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gender-coding-correction-complete-not-published-on-website-until-fdr-complete" class="md-nav__link">
+    <span class="md-ellipsis">
+      Gender Coding Correction (Complete, not published on website until FDR complete)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#outliers-in-graphs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Outliers in Graphs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#p-value-differences-with-spss" class="md-nav__link">
+    <span class="md-ellipsis">
+      P-Value Differences with SPSS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#final-status-and-recommendations-april-19-2025" class="md-nav__link">
+    <span class="md-ellipsis">
+      Final Status and Recommendations (April 19, 2025)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#feedback" class="md-nav__link">
+    <span class="md-ellipsis">
+      Feedback
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Feedback">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#false-discovery-rate-fdr-correction" class="md-nav__link">
+    <span class="md-ellipsis">
+      False Discovery Rate (FDR) Correction
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bivariate-relationships-tab" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bivariate Relationships Tab
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gender-coding-correction-complete-not-published-on-website-until-fdr-complete" class="md-nav__link">
+    <span class="md-ellipsis">
+      Gender Coding Correction (Complete, not published on website until FDR complete)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#outliers-in-graphs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Outliers in Graphs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#p-value-differences-with-spss" class="md-nav__link">
+    <span class="md-ellipsis">
+      P-Value Differences with SPSS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#final-status-and-recommendations-april-19-2025" class="md-nav__link">
+    <span class="md-ellipsis">
+      Final Status and Recommendations (April 19, 2025)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+  <h1>Feedback</h1>
+
+<h2 id="feedback">Feedback<a class="headerlink" href="#feedback" title="Permanent link">&para;</a></h2>
+<h3 id="false-discovery-rate-fdr-correction">False Discovery Rate (FDR) Correction<a class="headerlink" href="#false-discovery-rate-fdr-correction" title="Permanent link">&para;</a></h3>
+<p>FDR controls the expected proportion of false positives among significant results when conducting multiple tests. When analyzing many variables simultaneously, the chance of finding "significant" results purely by chance increases substantially - this is known as the multiple comparisons problem. Unlike traditional Bonferroni correction which controls the probability of making even one false discovery, FDR is generally more powerful as it allows a small proportion of false positives while maintaining statistical rigor.</p>
+<p>Our analysis now implements a <strong>family-wise FDR correction</strong> using the Benjamini-Hochberg method. This means we apply the correction separately to logical groups ("families") of tests:</p>
+<ol>
+<li><strong>T-test Family:</strong> All independent samples t-tests comparing groups (e.g., Gender, Eating Disorder History) on outcome variables are corrected together.</li>
+<li><strong>ANCOVA Family:</strong> All ANCOVA results (both the main effects of independent variables and the effects of demographic covariates) are corrected together.</li>
+</ol>
+<p>This approach is less conservative than applying a single global correction across all tests, potentially increasing the power to detect true effects within each family of analyses while still appropriately controlling the overall false discovery rate. The analysis report will show both the raw p-values and these family-wise adjusted p-values.</p>
+<h3 id="bivariate-relationships-tab">Bivariate Relationships Tab<a class="headerlink" href="#bivariate-relationships-tab" title="Permanent link">&para;</a></h3>
+<p>The Bivariate Relationships tab shows how variables relate to each other through:</p>
+<ol>
+<li>Pair plots of outcome variables (scatterplots showing correlations)</li>
+<li>Correlation heatmap (strength/direction of relationships between outcomes)</li>
+<li>Categorical associations heatmap (Cramér's V between categorical variables)</li>
+</ol>
+<p>These visualizations help identify patterns before formal testing and provide context for statistical findings.</p>
+<h3 id="gender-coding-correction-complete-not-published-on-website-until-fdr-complete">Gender Coding Correction (Complete, not published on website until FDR complete)<a class="headerlink" href="#gender-coding-correction-complete-not-published-on-website-until-fdr-complete" title="Permanent link">&para;</a></h3>
+<p>I've updated the variable definitions to correctly reflect that Males correspond to "2" and Females to "1" on the gender variable. This change has been implemented in the code and will be reflected in all future analyses and reports.</p>
+<h3 id="outliers-in-graphs">Outliers in Graphs<a class="headerlink" href="#outliers-in-graphs" title="Permanent link">&para;</a></h3>
+<p>Yes, the "o's" are outliers (points beyond 1.5×IQR from quartiles). We included these in all analyses as they may represent valid data points. We can exclude them if preferred, but this would require careful consideration of the impact on results.</p>
+<h3 id="p-value-differences-with-spss">P-Value Differences with SPSS<a class="headerlink" href="#p-value-differences-with-spss" title="Permanent link">&para;</a></h3>
+<p>P-value differences between our analysis and the original SPSS results likely stem from several factors:</p>
+<ol>
+<li><strong>FDR Correction</strong>: Our primary reported p-values are adjusted for multiple comparisons using family-wise FDR (Benjamini-Hochberg), while the SPSS results appear to be uncorrected (raw) p-values. The raw p-values from our analysis are also available for comparison.</li>
+<li><strong>T-test Type (Variance Assumption)</strong>*: Our Python analysis now uses <strong>Welch's t-test</strong> (via <code>pingouin.ttest(correction=True)</code>), which does <em>not</em> assume equal variances between groups. This is generally considered a more robust approach when variances might differ. If the original SPSS analysis used the standard Student's t-test (which <em>does</em> assume equal variances), this could lead to minor differences in the raw p-values, especially if group variances are unequal. However, Welch's test often yields similar results when variances are equal. The close match between our raw p-values and the SPSS p-values suggests SPSS likely also used Welch's test or a similar method robust to unequal variances.</li>
+<li><strong>Implementation Differences</strong>: Minor variations in the underlying numerical algorithms between statistical packages (Python libraries vs. SPSS) can sometimes lead to small differences in p-values, even when the same conceptual test is performed.</li>
+</ol>
+<p>* <em>Welch's t-test adjusts the degrees of freedom when calculating the p-value to account for potential differences in variance between the groups, making it more reliable than Student's t-test when the assumption of equal variances is violated.</em></p>
+<p><em>Note: While our code uses 'omit' for handling potential missing values during calculations, our review of the dataset shows no missing values in any of the variables used in the t-tests or ANCOVAs, so this is unlikely to contribute to p-value differences with SPSS.</em></p>
+<h3 id="final-status-and-recommendations-april-19-2025">Final Status and Recommendations (April 19, 2025)<a class="headerlink" href="#final-status-and-recommendations-april-19-2025" title="Permanent link">&para;</a></h3>
+<p>Following a detailed review and update process:</p>
+<ol>
+<li><strong>Methodology Update:</strong> The Python analysis pipeline (<code>scripts/statistical_analysis.py</code>) has been updated to use robust and standard methods:<ul>
+<li><strong>T-tests:</strong> Welch's t-test (assuming unequal variances) is consistently used via <code>pingouin.ttest(correction=True)</code>, which also provides the appropriate Cohen's d effect size.</li>
+<li><strong>ANCOVA:</strong> Continues to use <code>pingouin.ancova</code>.</li>
+<li><strong>Multiple Comparisons:</strong> Benjamini-Hochberg False Discovery Rate (FDR) correction is applied family-wise (t-tests corrected together, ANCOVAs corrected together). This is a standard approach that is less conservative than a global correction.</li>
+</ul>
+</li>
+<li>
+<p><strong>SPSS Comparison:</strong></p>
+<ul>
+<li>Raw p-values from the Python Welch's t-tests generally align well with the provided SPSS p-values.</li>
+<li>Investigation using Student's t-test in Python strongly suggests that the larger discrepancies observed previously were due to the original SPSS analysis likely using Student's t-test (equal variances assumed). The Python code now consistently uses the more appropriate Welch's test.</li>
+<li>
+<p>The table below provides a detailed comparison of raw p-values from Python (using both Welch's and Student's t-tests) against the original SPSS values:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Independent Variable</th>
+<th style="text-align: left;">Outcome Variable</th>
+<th style="text-align: left;">Python Raw P-Value (Welch's)</th>
+<th style="text-align: left;">Python Raw P-Value (Student's)</th>
+<th style="text-align: left;">SPSS Raw P-Value</th>
+<th style="text-align: left;">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Gender</strong></td>
+<td style="text-align: left;">SS1 avg</td>
+<td style="text-align: left;">0.048</td>
+<td style="text-align: left;">0.045</td>
+<td style="text-align: left;">0.045</td>
+<td style="text-align: left;">Welch's close; Student's matches SPSS exactly.</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">SS2 avg</td>
+<td style="text-align: left;">0.223</td>
+<td style="text-align: left;">0.193</td>
+<td style="text-align: left;">0.223</td>
+<td style="text-align: left;">Welch's matches SPSS exactly.</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">SS3 avg</td>
+<td style="text-align: left;">0.161</td>
+<td style="text-align: left;">0.148</td>
+<td style="text-align: left;">0.148</td>
+<td style="text-align: left;">Welch's close; Student's matches SPSS exactly.</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">SS4 avg</td>
+<td style="text-align: left;">0.535</td>
+<td style="text-align: left;">0.509</td>
+<td style="text-align: left;">0.536</td>
+<td style="text-align: left;">Welch's very close to SPSS.</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Total Score Avg</td>
+<td style="text-align: left;">0.058</td>
+<td style="text-align: left;">0.045</td>
+<td style="text-align: left;">0.059</td>
+<td style="text-align: left;">Welch's very close to SPSS; Student's p &lt; 0.05.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>History of eating disorder</strong></td>
+<td style="text-align: left;">SS1 avg</td>
+<td style="text-align: left;">0.007</td>
+<td style="text-align: left;">0.011</td>
+<td style="text-align: left;">0.011</td>
+<td style="text-align: left;">Welch's close; Student's matches SPSS exactly. Both p &lt; 0.05.</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">SS2 avg</td>
+<td style="text-align: left;">0.871</td>
+<td style="text-align: left;">0.858</td>
+<td style="text-align: left;">0.862</td>
+<td style="text-align: left;">Both very close to SPSS.</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">SS3 avg</td>
+<td style="text-align: left;">0.030</td>
+<td style="text-align: left;">0.011</td>
+<td style="text-align: left;">0.011</td>
+<td style="text-align: left;">Welch's p &lt; 0.05; Student's matches SPSS exactly (p &lt; 0.05).</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">SS4 avg</td>
+<td style="text-align: left;">0.036</td>
+<td style="text-align: left;"><strong>0.160</strong></td>
+<td style="text-align: left;"><strong>0.159</strong>⚠️</td>
+<td style="text-align: left;">Welch's p &lt; 0.05; <strong>Student's matches SPSS very closely (p &gt; 0.05).</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Total Score Avg</td>
+<td style="text-align: left;">0.044</td>
+<td style="text-align: left;"><strong>0.102</strong></td>
+<td style="text-align: left;"><strong>0.102</strong>⚠️</td>
+<td style="text-align: left;">Welch's p &lt; 0.05; <strong>Student's matches SPSS exactly (p &gt; 0.05).</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Prior recommendation to change weight</strong></td>
+<td style="text-align: left;">SS1 avg</td>
+<td style="text-align: left;">0.128</td>
+<td style="text-align: left;">0.126</td>
+<td style="text-align: left;">0.126</td>
+<td style="text-align: left;">Welch's close; Student's matches SPSS exactly.</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">SS2 avg</td>
+<td style="text-align: left;">0.422</td>
+<td style="text-align: left;">0.418</td>
+<td style="text-align: left;">0.416</td>
+<td style="text-align: left;">Both very close to SPSS.</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">SS3 avg</td>
+<td style="text-align: left;">0.154</td>
+<td style="text-align: left;">0.152</td>
+<td style="text-align: left;">0.153</td>
+<td style="text-align: left;">Both very close to SPSS.</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">SS4 avg</td>
+<td style="text-align: left;">0.150</td>
+<td style="text-align: left;">0.149</td>
+<td style="text-align: left;">0.150</td>
+<td style="text-align: left;">Both match SPSS almost exactly.</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Total Score Avg</td>
+<td style="text-align: left;">0.065</td>
+<td style="text-align: left;">0.064</td>
+<td style="text-align: left;">0.065</td>
+<td style="text-align: left;">Both match SPSS almost exactly.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Weight-sensitive sport</strong></td>
+<td style="text-align: left;">SS1 avg</td>
+<td style="text-align: left;">0.807</td>
+<td style="text-align: left;">0.802</td>
+<td style="text-align: left;">0.803</td>
+<td style="text-align: left;">Both very close to SPSS.</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">SS2 avg</td>
+<td style="text-align: left;">0.576</td>
+<td style="text-align: left;">0.558</td>
+<td style="text-align: left;">0.556</td>
+<td style="text-align: left;">Both very close to SPSS.</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">SS3 avg</td>
+<td style="text-align: left;">0.480</td>
+<td style="text-align: left;">0.478</td>
+<td style="text-align: left;">0.479</td>
+<td style="text-align: left;">Both match SPSS almost exactly.</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">SS4 avg</td>
+<td style="text-align: left;">0.078</td>
+<td style="text-align: left;">0.090</td>
+<td style="text-align: left;">0.091</td>
+<td style="text-align: left;">Both close to SPSS.</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Total Score Avg</td>
+<td style="text-align: left;">0.592</td>
+<td style="text-align: left;">0.578</td>
+<td style="text-align: left;">0.581</td>
+<td style="text-align: left;">Both close to SPSS.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Endurance sport</strong></td>
+<td style="text-align: left;">SS1 avg</td>
+<td style="text-align: left;">0.735</td>
+<td style="text-align: left;">0.729</td>
+<td style="text-align: left;">0.731</td>
+<td style="text-align: left;">Both very close to SPSS.</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">SS2 avg</td>
+<td style="text-align: left;">0.501</td>
+<td style="text-align: left;"><strong>0.477</strong></td>
+<td style="text-align: left;"><strong>0.737</strong>⚠️</td>
+<td style="text-align: left;"><strong>Notable difference persists</strong> for both Welch's and Student's.</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">SS3 avg</td>
+<td style="text-align: left;">0.668</td>
+<td style="text-align: left;">0.676</td>
+<td style="text-align: left;">0.678</td>
+<td style="text-align: left;">Both very close to SPSS.</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">SS4 avg</td>
+<td style="text-align: left;">0.057</td>
+<td style="text-align: left;">0.065</td>
+<td style="text-align: left;">0.066</td>
+<td style="text-align: left;">Both very close to SPSS.</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Total Score Avg</td>
+<td style="text-align: left;">0.446</td>
+<td style="text-align: left;">0.436</td>
+<td style="text-align: left;">0.438</td>
+<td style="text-align: left;">Both very close to SPSS.</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>One notable raw p-value discrepancy remains for "Endurance sport / SS2 avg", potentially due to data handling or transcription issues in the original comparison data.</p>
+</li>
+<li><strong>Dependencies &amp; Execution:</strong> The project dependencies (<code>requirements.txt</code>) have been updated (<code>mkdocs-charts-plugin</code> added), and the full pipeline (<code>scripts/orchestrator.py</code>) runs successfully, generating results and building the documentation site.</li>
+</ul>
+</li>
+</ol>
+<p><strong>Recommendation:</strong></p>
+<ul>
+<li>Proceed with the analysis using the current state of the code.</li>
+<li>When reporting results, clearly state the methods (Welch's t-test, ANCOVA, family-wise FDR), report both raw and adjusted p-values, and focus interpretation on effect sizes alongside the adjusted p-values.</li>
+<li>Use the information in <code>PYTHON_SPSS_PVALUE_COMPARISON.md</code> to explain differences compared to the original SPSS analysis if needed.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.sections", "navigation.expand", "navigation.instant", "navigation.tracking", "navigation.indexes", "header.autohide", "content.code.copy", "content.action.edit", "content.action.view"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c8b220af.min.js"></script>
+      
+        <script src="../js/mkdocs-charts-plugin.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+      
+    
+  </body>
+</html>
