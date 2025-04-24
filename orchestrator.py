@@ -7,7 +7,7 @@ import sys
 import subprocess
 
 # Add project root to Python path
-project_root = Path(__file__).parent.parent
+project_root = Path(__file__).parent
 sys.path.append(str(project_root))
 
 from scripts.data_loader import load_data, generate_demographics_table
@@ -89,9 +89,13 @@ def main():
     # Generate report markdown files
     print("\nGenerating report markdown files...")
 
+    # Copy FEEDBACK.md to docs/feedback.md
+    shutil.copy(project_root / "FEEDBACK.md", project_root / "docs" / "feedback.md")
+
     # Build MkDocs site
     print("\nBuilding MkDocs site...")
     subprocess.run(["mkdocs", "build"], check=True)
+
 
 if __name__ == "__main__":
     main() 
