@@ -37,6 +37,6 @@ jobs:
       - run: pip install mkdocs-material
 
       - name: Run orchestrator to generate docs
-        run: python scripts/orchestrator.py
+        run: python orchestrator.py
 
       - run: mkdocs gh-deploy --force
