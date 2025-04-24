@@ -12,6 +12,9 @@ theme:
     - content.code.copy
     - content.action.edit
     - content.action.view
+  custom_dir: docs/overrides
+extra_css:
+  - stylesheets/extra.css
 nav:
   - Home: index.md
   - Variable Summary: data_summary.md
